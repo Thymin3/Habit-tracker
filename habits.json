@@ -1,0 +1,25 @@
+{
+    "habits": [
+      {
+        "name": "Meditation",
+        "interval": "daily"
+      },
+      {
+        "name": "Exercise",
+        "interval": "daily"
+      },
+      {
+        "name": "Read",
+        "interval": "daily"
+      },
+      {
+        "name": "Call a friend",
+        "interval": "weekly"
+      },
+      {
+        "name": "Learn a new language",
+        "interval": "weekly"
+      }
+    ]
+  }
+  
