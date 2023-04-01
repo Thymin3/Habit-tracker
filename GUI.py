@@ -6,7 +6,7 @@ class App(tk.Tk):
         self.title("My App")
 
         self.label = tk.Label(self, text="Hello, world!")
-        self.label.pack(padx=20, pady=20)
+        self.label.pack(padx=100, pady=100)
 
         self.button = tk.Button(self, text="Click me!", command=self.on_button_click)
         self.button.pack(padx=20, pady=20)
