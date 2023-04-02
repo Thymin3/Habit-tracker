@@ -6,9 +6,8 @@ def do_something():
 
 
 if __name__ == '__main__':
-    app = GUI.App()
+    app = GUI.StartMenu()
 
     # Link button click to a function in main script
-    app.button.config(command=do_something)
-
+    #app.button_create_habit.config(command=do_something)
     app.mainloop()
