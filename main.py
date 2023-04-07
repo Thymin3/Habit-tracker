@@ -1,7 +1,7 @@
 import GUI
 
 
-def do_something():
+def create_habit():
     print("Doing something...")
 
 
