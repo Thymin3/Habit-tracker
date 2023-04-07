@@ -1,5 +1,6 @@
 import GUI
 
+habit_list = ("a", "b", "c", "d")
 
 def create_habit():
     print("Doing something...")

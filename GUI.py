@@ -13,10 +13,10 @@ class Menu(tk.Tk):
 
         # Defining widgets
         # General widgets
-        self.button_back = tk.Button(self, text="Back", command=self.back_click)
+        self.button_back = tk.Button(self, text="Back to main menu", command=self.back_click)
 
-        # Start menu
-        self.label = tk.Label(self, text="Start menu", font=30)
+        # Main menu
+        self.label = tk.Label(self, text="Main menu", font=30)
         self.button_create_habit = tk.Button(self, text="Create habit", command=self.create_click)
         self.button_delete_habit = tk.Button(self, text="Delete habit", command=self.delete_click)
         self.button_complete_habit = tk.Button(self, text="Complete habit", command=self.complete_click)
@@ -30,7 +30,12 @@ class Menu(tk.Tk):
         self.input_field_daily = tk.Entry(self)
         self.input_field_weekly = tk.Entry(self)
 
-        # Pack widgets of start menu
+        # Delete Habits
+        self.selected_habit = main.habit_list[0]
+        self.dropdown_menu_habits = tk.OptionMenu(self, self.selected_habit, *main.habit_list)
+        self.confirm_button = tk.Button(self, text="confirm")
+
+        # Pack widgets of main menu
         self.label.pack()
         self.button_create_habit.pack()
         self.button_delete_habit.pack()
@@ -38,12 +43,12 @@ class Menu(tk.Tk):
         self.button_analyze_habits.pack()
         self.button_exit.pack()
 
-# Start menu methods
-    def create_click(self):  # Setting up creation menu
+# Main menu methods
+    def create_click(self):
 
-        # Remove start menu buttons and setting label to creation menu
+        # Remove widgets and set label to creation menu
         self.remove_all_widgets()
-        self.label.configure(text="Create Menu")
+        self.label.configure(text="Creation Menu")
 
         # Pack widgets
         self.label.pack()
@@ -52,13 +57,37 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def delete_click(self):
-        pass
+        # Remove widgets and adjust label
+        self.remove_all_widgets()
+        self.label.configure(text="Which habit would you like to delete?")
+
+        # Pack widgets
+        self.label.pack()
+        self.dropdown_menu_habits.pack()
+        self.confirm_button.pack()
+        self.button_back.pack()
 
     def complete_click(self):
-        pass
+        # Remove widgets and adjust label
+        self.remove_all_widgets()
+        self.label.configure(text="Which habit did you complete today?")
+
+        # Pack widgets
+        self.label.pack()
+        self.dropdown_menu_habits.pack()
+        self.confirm_button.pack()
+        self.button_back.pack()
 
     def analyze_click(self):
-        pass
+        # Remove widgets and adjust label
+        self.remove_all_widgets()
+        self.label.configure(text="Which habit would you like to analyze?")
+
+        # Pack widgets
+        self.label.pack()
+        self.dropdown_menu_habits.pack()
+        self.confirm_button.pack()
+        self.button_back.pack()
 
     def exit_click(self):
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -74,6 +103,7 @@ class Menu(tk.Tk):
         self.label.pack()
         self.input_field_daily.pack()
         self.create_habit_button.pack()
+        self.button_back.pack()
 
     def weekly_click(self):
         # Remove creation menu buttons and adjusting label
@@ -84,6 +114,7 @@ class Menu(tk.Tk):
         self.label.pack()
         self.input_field_weekly.pack()
         self.create_habit_button.pack()
+        self.button_back.pack()
 
 # General methods
     def back_click(self):
