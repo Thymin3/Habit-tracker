@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
-import main
+from main import Habit
 
 
-class Menu(tk.Tk):
+class Menu(tk.Tk, Habit):
     def __init__(self):
         super().__init__()
 
@@ -26,13 +26,13 @@ class Menu(tk.Tk):
         # Creation menu
         self.button_daily = tk.Button(self, text="Create daily habit", command=self.daily_click)
         self.button_weekly = tk.Button(self, text="Create weekly habit", command=self.weekly_click)
-        self.create_habit_button = tk.Button(self, text="Create habit", command=main.create_habit)
+        self.create_habit_button = tk.Button(self, text="Create habit", command=self.get_input_daily)
         self.input_field_daily = tk.Entry(self)
         self.input_field_weekly = tk.Entry(self)
 
         # Delete Habits
-        self.selected_habit = main.habit_list[0]
-        self.dropdown_menu_habits = tk.OptionMenu(self, self.selected_habit, *main.habit_list)
+        self.selected_habit = self.habit_list[0]
+        self.dropdown_menu_habits = tk.OptionMenu(self, self.selected_habit, *self.habit_list)
         self.confirm_button = tk.Button(self, text="confirm")
 
         # Pack widgets of main menu
@@ -45,7 +45,6 @@ class Menu(tk.Tk):
 
 # Main menu methods
     def create_click(self):
-
         # Remove widgets and set label to creation menu
         self.remove_all_widgets()
         self.label.configure(text="Creation Menu")
@@ -134,6 +133,9 @@ class Menu(tk.Tk):
         for widget in self.winfo_children():
             widget.pack_forget()
 
+    def get_input_daily(self):
+        input_daily = self.input_field_daily.get()
+        return input_daily
 
 if __name__ == "__main__":
     app = Menu()
