@@ -113,7 +113,14 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def create_daily_habit(self):
-        pass
+        new_habit = self.input_field_daily.get()
+        # Removing widgets and adjusting label
+        self.input_field_daily.pack_forget()
+        self.create_habit_daily.pack_forget()
+        self.label.configure(text="Daily habit created!")
+
+        # Calling the create_habit function in the controller module
+        controller.create_daily_habit(new_habit)
 
     def create_weekly_habit(self):
         pass

@@ -1,7 +1,6 @@
 import sqlite3 as sql
 import datetime
 import controller
-import random
 
 
 def setup_database():
@@ -47,15 +46,13 @@ def setup_database():
             else:
                 current_date += datetime.timedelta(days=1)
 
-
     # Closing the cursor and the connection
     conn.commit()
     cursor.close()
     conn.close()
 
 
-
-def sql_complete_habit(HabitID):
+def sql_complete_habit(habit_ID):
     # Storing current datetime in a variable
     current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     selected_habit = None  # Implement Connection from controller
@@ -67,7 +64,7 @@ def sql_complete_habit(HabitID):
     cursor = conn.cursor()
 
     # Inserting a new execution for  a habit
-    cursor.execute(f"INSERT INTO HabitExecution (HabitID, DateTime) VALUES ({HabitID}, {current_datetime})")
+    cursor.execute(f"INSERT INTO HabitExecution (HabitID, DateTime) VALUES ({habit_ID}, {current_datetime})")
 
     # Commit the changes and close the cursor and the connection
     conn.commit()
@@ -117,4 +114,3 @@ if __name__ == "__main__":
         pass
     finally:
         check_database()
-

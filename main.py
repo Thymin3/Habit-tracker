@@ -3,17 +3,34 @@ import controller
 
 
 class Habit:
-    def __init__(self):
-        self.habit_list = ("a", "b", "c", "d")
+    def __init__(self, name, periodicity, current_streak=0, longest_streak=0):
+        self.name = name
+        self.periodicity = periodicity
+        self.current_streak = current_streak
+        self.longest_streak = longest_streak
 
-    def create_habit(self):
-        pass
+    @classmethod
+    def create_habit(cls, name, periodicity):
+        habit = cls(name, periodicity)
+        print(habit.name, habit.periodicity, habit.current_streak)
 
     def delete_habit(self):
         pass
 
+    def complete_task(self):
+        pass
 
+    def update_current_streak(self):
+        pass
 
+    def update_longest_streak(self):
+        pass
+
+    def break_streak(self):
+        pass
+
+    def check_for_breaks(self):
+        pass
 
 if __name__ == '__main__':
     controller.run_GUI()
