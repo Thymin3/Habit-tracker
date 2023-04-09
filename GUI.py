@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
-from main import Habit
+import controller
 
 
-class Menu(tk.Tk, Habit):
+class Menu(tk.Tk):
     def __init__(self):
         super().__init__()
 
@@ -14,6 +14,7 @@ class Menu(tk.Tk, Habit):
         # Defining widgets
         # General widgets
         self.button_back = tk.Button(self, text="Back to main menu", command=self.back_click)
+        self.confirm_button = tk.Button(self, text="confirm")
 
         # Main menu
         self.label = tk.Label(self, text="Main menu", font=30)
@@ -26,14 +27,10 @@ class Menu(tk.Tk, Habit):
         # Creation menu
         self.button_daily = tk.Button(self, text="Create daily habit", command=self.daily_click)
         self.button_weekly = tk.Button(self, text="Create weekly habit", command=self.weekly_click)
-        self.create_habit_button = tk.Button(self, text="Create habit", command=self.get_input_daily)
+        self.create_habit_daily = tk.Button(self, text="Create habit", command=self.create_daily_habit)
+        self.create_habit_weekly = tk.Button(self, text="Create habit", command=self.create_weekly_habit)
         self.input_field_daily = tk.Entry(self)
         self.input_field_weekly = tk.Entry(self)
-
-        # Delete Habits
-        self.selected_habit = self.habit_list[0]
-        self.dropdown_menu_habits = tk.OptionMenu(self, self.selected_habit, *self.habit_list)
-        self.confirm_button = tk.Button(self, text="confirm")
 
         # Pack widgets of main menu
         self.label.pack()
@@ -62,7 +59,7 @@ class Menu(tk.Tk, Habit):
 
         # Pack widgets
         self.label.pack()
-        self.dropdown_menu_habits.pack()
+        #self.dropdown_menu_habits.pack()
         self.confirm_button.pack()
         self.button_back.pack()
 
@@ -73,7 +70,7 @@ class Menu(tk.Tk, Habit):
 
         # Pack widgets
         self.label.pack()
-        self.dropdown_menu_habits.pack()
+        #self.dropdown_menu_habits.pack()
         self.confirm_button.pack()
         self.button_back.pack()
 
@@ -84,7 +81,7 @@ class Menu(tk.Tk, Habit):
 
         # Pack widgets
         self.label.pack()
-        self.dropdown_menu_habits.pack()
+        #self.dropdown_menu_habits.pack()
         self.confirm_button.pack()
         self.button_back.pack()
 
@@ -101,7 +98,7 @@ class Menu(tk.Tk, Habit):
         # Pack widget
         self.label.pack()
         self.input_field_daily.pack()
-        self.create_habit_button.pack()
+        self.create_habit_daily.pack()
         self.button_back.pack()
 
     def weekly_click(self):
@@ -112,8 +109,14 @@ class Menu(tk.Tk, Habit):
         # Pack widgets
         self.label.pack()
         self.input_field_weekly.pack()
-        self.create_habit_button.pack()
+        self.create_habit_weekly.pack()
         self.button_back.pack()
+
+    def create_daily_habit(self):
+        pass
+
+    def create_weekly_habit(self):
+        pass
 
 # General methods
     def back_click(self):
@@ -133,10 +136,9 @@ class Menu(tk.Tk, Habit):
         for widget in self.winfo_children():
             widget.pack_forget()
 
-    def get_input_daily(self):
-        input_daily = self.input_field_daily.get()
-        return input_daily
 
-if __name__ == "__main__":
+
+
+"""if __name__ == "__main__":
     app = Menu()
-    app.mainloop()
+    app.mainloop()"""
