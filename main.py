@@ -3,16 +3,17 @@ import controller
 
 
 class Habit:
-    def __init__(self, name, periodicity, current_streak=0, longest_streak=0):
+    def __init__(self, name, periodicity, current_streak=0, longest_streak=0, number_of_brakes=0):
         self.name = name
         self.periodicity = periodicity
         self.current_streak = current_streak
         self.longest_streak = longest_streak
+        self.number_of_brakes = number_of_brakes
 
-    @classmethod
+    @classmethod    # Used to avoid that controller is calling the class itself without an instance having been created
     def create_habit(cls, name, periodicity):
-        habit = cls(name, periodicity)
-        print(habit.name, habit.periodicity, habit.current_streak)
+        habit = cls(name, periodicity)  # Creating a new habit instance
+        return habit.name, habit.periodicity
 
     def delete_habit(self):
         pass

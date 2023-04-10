@@ -71,6 +71,7 @@ def sql_complete_habit(habit_ID):
     cursor.close()
     conn.close()
 
+
 def sql_create_habit(habit_name, periodicity):
     # Connecting to the database
     conn = sql.connect('habit_tracker.db')
@@ -80,7 +81,13 @@ def sql_create_habit(habit_name, periodicity):
 
     # Insert a new execution for habit
     cursor.execute(f'''INSERT INTO Habit (HabitName, Periodicity, CurrentStreak,
-                   LongestStreak, NumberOfBreaks) VALUES({habit_name}, {periodicity}, 0, 0, 0)''')
+                   LongestStreak, NumberOfBreaks) VALUES("{habit_name}", "{periodicity}", 0, 0, 0)''')
+
+    # Committing changes and closing the connection and cursor
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 
 def check_database():
     # Connecting to the database
@@ -107,10 +114,11 @@ def check_database():
     cursor.close()
     conn.close()
 
+
 if __name__ == "__main__":
     try:
         setup_database()
-    except sql.OperationalError:
+    except sql.OperationalError:  # If database already exists, it shouldn't be created again
         pass
     finally:
         check_database()
