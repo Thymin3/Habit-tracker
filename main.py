@@ -15,7 +15,7 @@ class Habit:
         habit = cls(name, periodicity)  # Creating a new habit instance
         return habit.name, habit.periodicity
 
-    def delete_habit(self):
+    def delete_habit(self, name):
         pass
 
     def complete_task(self):

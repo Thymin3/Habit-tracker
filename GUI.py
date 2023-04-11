@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 import controller
 
@@ -15,6 +16,7 @@ class Menu(tk.Tk):
         # General widgets
         self.button_back = tk.Button(self, text="Back to main menu", command=self.back_click)
         self.confirm_button = tk.Button(self, text="confirm")
+        self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
         # Main menu
         self.label = tk.Label(self, text="Main menu", font=30)
@@ -31,6 +33,9 @@ class Menu(tk.Tk):
         self.create_habit_weekly = tk.Button(self, text="Create habit", command=self.create_weekly_habit)
         self.input_field_daily = tk.Entry(self)
         self.input_field_weekly = tk.Entry(self)
+
+        # Deletion menu
+        self.delete_button = tk.Button(self, text="Delete", command=self.delete_habit)
 
         # Pack widgets of main menu
         self.label.pack()
@@ -59,8 +64,8 @@ class Menu(tk.Tk):
 
         # Pack widgets
         self.label.pack()
-        #self.dropdown_menu_habits.pack()
-        self.confirm_button.pack()
+        self.dropdown_habit_list.pack()
+        self.delete_button.pack()
         self.button_back.pack()
 
     def complete_click(self):
@@ -112,6 +117,7 @@ class Menu(tk.Tk):
         self.create_habit_weekly.pack()
         self.button_back.pack()
 
+    # Getting user input for habit name and passing it to controller
     def create_daily_habit(self):
         new_habit = self.input_field_daily.get()
         # Removing widgets and adjusting label
@@ -127,10 +133,21 @@ class Menu(tk.Tk):
         # Removing widgets and adjusting label
         self.input_field_weekly.pack_forget()
         self.create_habit_weekly.pack_forget()
-        self.label.configure(text="Daily habit created!")
+        self.label.configure(text="Weekly habit created!")
 
         # Calling the create_habit function in the controller module
         controller.create_weekly_habit(new_habit)
+
+# Deletion menu methods
+    def delete_habit(self):
+        habit_to_delete = self.dropdown_habit_list.get()
+        # Removing widgets and adjusting label
+        self.remove_all_widgets()
+        self.label.configure(text="Habit deleted.")
+        self.label.pack()
+        self.button_back.pack()
+
+        controller.delete_habit(habit_to_delete)
 
 # General methods
     def back_click(self):
@@ -150,8 +167,8 @@ class Menu(tk.Tk):
         for widget in self.winfo_children():
             widget.pack_forget()
 
-
-
+if __name__ == "__main__":
+    print(controller.get_habit_list())
 
 """if __name__ == "__main__":
     app = Menu()

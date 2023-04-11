@@ -89,6 +89,40 @@ def sql_create_habit(habit_name, periodicity):
     conn.close()
 
 
+def sql_delete_habit(habit_name):
+    # Connecting to the database
+    conn = sql.connect('habit_tracker.db')
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Insert a new execution for habit
+    cursor.execute(f'''DELETE FROM Habit WHERE HabitName = "{habit_name}"''')
+
+    # Committing changes and closing the connection and cursor
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def sql_return_habit_list():
+    # Connecting to database
+    conn = sql.connect('habit_tracker.db')
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving data from Habit table
+    cursor.execute('''SELECT HabitName FROM Habit''')
+    habit_names_not_processed = cursor.fetchall()
+    habit_names = [item[0] for item in habit_names_not_processed]
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return habit_names
+
 def check_database():
     # Connecting to the database
     conn = sql.connect('habit_tracker.db')
@@ -116,9 +150,11 @@ def check_database():
 
 
 if __name__ == "__main__":
-    try:
-        setup_database()
-    except sql.OperationalError:  # If database already exists, it shouldn't be created again
-        pass
-    finally:
-        check_database()
+    # try:
+    #     setup_database()
+    # except sql.OperationalError:  # If database already exists, it shouldn't be created again
+    #     pass
+    # finally:
+    #     check_database()
+    check_database()
+

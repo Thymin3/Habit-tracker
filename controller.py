@@ -2,22 +2,42 @@ import main
 import GUI
 import database
 
-
 # Functions passed to main
+
 def create_daily_habit(name, periodicity="daily"):
-    # Pass user input to main logic
+    """Used for receiving a call from the GUI to create a habit + generating a new habit in the database.
+
+        Since the command was performed by the user over the daily button, the periodicity is set to daily by default.
+        The habit name is defined by the user in the entry widget.
+        A new habit will be generated in the habit_tracker database"""
+
+    # Passing user input to main logic
     new_habit_name, new_habit_periodicity = main.Habit.create_habit(name, periodicity)
     database.sql_create_habit(new_habit_name, new_habit_periodicity)
 
 
 def create_weekly_habit(name, periodicity="weekly"):
-    # Pass user input to main logic
-    main.Habit.create_habit(name, periodicity)
+    """Used for receiving a call from the GUI to create a habit + generating a new habit in the database.
+
+        Since the command was performed by the user over the weekly button, the periodicity is set to weekly by default.
+        The habit name is defined by the user in the entry widget.
+        A new habit will be generated in the habit_tracker database"""
+
+    # Passing user input to main logic
+    new_habit_name, new_habit_periodicity = main.Habit.create_habit(name, periodicity)
+    database.sql_create_habit(new_habit_name, new_habit_periodicity)
+
+
+def get_habit_list():
+    """Receiving habit_ID_plus_name list from database and returning two new lists: habit_IDs and habit_names"""
+    habit_names = database.sql_return_habit_list()
+    # Passing Habit IDs and habit names
+    return habit_names
 
 
 def delete_habit(name):
-    # Pass user input to main logic
-    main.Habit.delete_habit(name)
+    # Passing user input to main logic
+    database.sql_delete_habit(name)
 
 
 # Show a list of habits
