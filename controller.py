@@ -29,7 +29,7 @@ def create_weekly_habit(name, periodicity="weekly"):
 
 
 def get_habit_list():
-    """Receiving habit_ID_plus_name list from database and returning two new lists: habit_IDs and habit_names"""
+    """Receiving habit_names list from database and returning it for the GUI"""
     habit_names = database.sql_return_habit_list()
     # Passing Habit IDs and habit names
     return habit_names
@@ -48,6 +48,8 @@ def get_habits():
 def run_GUI():
     app = GUI.Menu()
     app.mainloop()
+
+
 
 
 if __name__ == '__main__':

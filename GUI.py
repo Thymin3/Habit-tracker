@@ -5,6 +5,7 @@ import controller
 
 
 class Menu(tk.Tk):
+
     def __init__(self):
         super().__init__()
 
@@ -128,6 +129,9 @@ class Menu(tk.Tk):
         # Calling the create_habit function in the controller module
         controller.create_daily_habit(new_habit)
 
+        # Updating habit dropdown menu
+        self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
+
     def create_weekly_habit(self):
         new_habit = self.input_field_weekly.get()
         # Removing widgets and adjusting label
@@ -138,6 +142,9 @@ class Menu(tk.Tk):
         # Calling the create_habit function in the controller module
         controller.create_weekly_habit(new_habit)
 
+        # Updating habit dropdown menu
+        self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
+
 # Deletion menu methods
     def delete_habit(self):
         habit_to_delete = self.dropdown_habit_list.get()
@@ -147,7 +154,11 @@ class Menu(tk.Tk):
         self.label.pack()
         self.button_back.pack()
 
+        # Let controller delete the selected habit
         controller.delete_habit(habit_to_delete)
+
+        # Updating habit dropdown menu
+        self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
 # General methods
     def back_click(self):
@@ -166,6 +177,10 @@ class Menu(tk.Tk):
     def remove_all_widgets(self):
         for widget in self.winfo_children():
             widget.pack_forget()
+
+    @classmethod
+    def update_habit_list_dropdown(cls):
+        cls.dropdown_habit_list.config(values=controller.get_habit_list())
 
 if __name__ == "__main__":
     print(controller.get_habit_list())
