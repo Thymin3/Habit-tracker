@@ -3,32 +3,44 @@ import controller
 
 
 class Habit:
-    def __init__(self, name, periodicity, current_streak=0, longest_streak=0, number_of_brakes=0):
+    def __init__(self, name, periodicity, days_since_last_completion=0, current_streak=0,
+                 longest_streak=0, number_of_breaks=0):
         self.name = name
         self.periodicity = periodicity
+        self.days_since_last_completion = days_since_last_completion
         self.current_streak = current_streak
         self.longest_streak = longest_streak
-        self.number_of_brakes = number_of_brakes
+        self.number_of_breaks = number_of_breaks
 
     @classmethod    # Used to avoid that controller is calling the class itself without an instance having been created
     def create_habit(cls, name, periodicity):
         habit = cls(name, periodicity)  # Creating a new habit instance
         return habit.name, habit.periodicity
 
-    def delete_habit(self, name):
-        pass
+    def complete_habit(self):
+        self.days_since_last_completion = 0
+        self.update_current_streak()
+        self.update_longest_streak()
 
-    def complete_task(self):
-        pass
+        return self.days_since_last_completion, self.current_streak, self.longest_streak, self.name
 
     def update_current_streak(self):
-        pass
+        self.current_streak = self.current_streak + 1
 
     def update_longest_streak(self):
-        pass
+        if self.longest_streak < self.current_streak:
+            self.longest_streak = self.current_streak
+        else:
+            pass
 
     def break_streak(self):
-        pass
+        if self.periodicity == "weekly":
+            if self.days_since_last_completion > 7:
+                self.current_streak = 0
+        elif self.days_since_last_completion > 1:
+            self.current_streak = 0
+        else:
+            pass
 
     def check_for_breaks(self):
         pass

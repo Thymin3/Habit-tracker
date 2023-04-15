@@ -38,6 +38,9 @@ class Menu(tk.Tk):
         # Deletion menu
         self.delete_button = tk.Button(self, text="Delete", command=self.delete_habit)
 
+        # Completion menu
+        self.complete_button = tk.Button(self, text="Complete for today", command=self.complete_habit)
+
         # Pack widgets of main menu
         self.label.pack()
         self.button_create_habit.pack()
@@ -76,8 +79,8 @@ class Menu(tk.Tk):
 
         # Pack widgets
         self.label.pack()
-        #self.dropdown_menu_habits.pack()
-        self.confirm_button.pack()
+        self.dropdown_habit_list.pack()
+        self.complete_button.pack()
         self.button_back.pack()
 
     def analyze_click(self):
@@ -121,26 +124,31 @@ class Menu(tk.Tk):
     # Getting user input for habit name and passing it to controller
     def create_daily_habit(self):
         new_habit = self.input_field_daily.get()
-        # Removing widgets and adjusting label
-        self.input_field_daily.pack_forget()
-        self.create_habit_daily.pack_forget()
-        self.label.configure(text="Daily habit created!")
 
-        # Calling the create_habit function in the controller module
-        controller.create_daily_habit(new_habit)
+        # Calling the create_habit function in the controller module and checking for unique name in database
+        if controller.create_daily_habit(new_habit):
+            self.label.configure(text="Habit already exists. Please use another name.")
+        else:
+            # Removing widgets and adjusting label
+            self.input_field_daily.pack_forget()
+            self.create_habit_daily.pack_forget()
+            self.label.configure(text="Daily habit created!")
+
 
         # Updating habit dropdown menu
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
     def create_weekly_habit(self):
         new_habit = self.input_field_weekly.get()
-        # Removing widgets and adjusting label
-        self.input_field_weekly.pack_forget()
-        self.create_habit_weekly.pack_forget()
-        self.label.configure(text="Weekly habit created!")
 
-        # Calling the create_habit function in the controller module
-        controller.create_weekly_habit(new_habit)
+        # Calling the create_habit function in the controller module and checking for unique name in database
+        if controller.create_weekly_habit(new_habit):
+            self.label.configure(text="Habit already exists. Please use another name.")
+        else:
+            # Removing widgets and adjusting label
+            self.input_field_weekly.pack_forget()
+            self.create_habit_weekly.pack_forget()
+            self.label.configure(text="Weekly habit created!")
 
         # Updating habit dropdown menu
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
@@ -154,11 +162,24 @@ class Menu(tk.Tk):
         self.label.pack()
         self.button_back.pack()
 
-        # Let controller delete the selected habit
+        # Letting controller delete the selected habit
         controller.delete_habit(habit_to_delete)
 
         # Updating habit dropdown menu
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
+
+# Completion menu methods
+    def complete_habit(self):
+        habit_to_complete = self.dropdown_habit_list.get()
+
+        # Removing widgets and adjusting label
+        self.remove_all_widgets()
+        self.label.configure(text="Habit completed today.")
+        self.label.pack()
+        self.button_back.pack()
+
+        # Letting controller update the selected habit
+        controller.complete_habit(habit_to_complete)
 
 # General methods
     def back_click(self):
@@ -178,9 +199,9 @@ class Menu(tk.Tk):
         for widget in self.winfo_children():
             widget.pack_forget()
 
-    @classmethod
-    def update_habit_list_dropdown(cls):
-        cls.dropdown_habit_list.config(values=controller.get_habit_list())
+    def update_habit_list_dropdown(self):
+        self.dropdown_habit_list.config(values=controller.get_habit_list())
+
 
 if __name__ == "__main__":
     print(controller.get_habit_list())

@@ -12,8 +12,9 @@ def setup_database():
 
     # Creating the Habit table
     cursor.execute('''CREATE TABLE Habit
-                    (ID INTEGER PRIMARY KEY AUTOINCREMENT, HabitName TEXT, Periodicity TEXT,
-                    CurrentStreak INTEGER, LongestStreak INTEGER, NumberOfBreaks INTEGER)''')
+                    (ID INTEGER PRIMARY KEY AUTOINCREMENT, HabitName TEXT, Periodicity TEXT, 
+                    DaysSinceLastCompletion INTEGER, CurrentStreak INTEGER, LongestStreak INTEGER, 
+                    NumberOfBreaks INTEGER)''')
 
     # Creating the HabitExecution table
     cursor.execute('''CREATE TABLE HabitExecution
@@ -25,8 +26,9 @@ def setup_database():
               ("Daily Breakfast", "daily"), ("Weekly Calling Mom", "weekly")]
 
     for habit in habits:
-        cursor.execute('''INSERT INTO Habit (HabitName, Periodicity, CurrentStreak, LongestStreak, NumberOfBreaks)
-                            VALUES (?, ?, 0, 0, 0)''', (habit[0], habit[1]))
+        cursor.execute('''INSERT INTO Habit (HabitName, Periodicity, 
+                        DaysSinceLastCompletion, CurrentStreak, LongestStreak, 
+                        NumberOfBreaks) VALUES (?, ?, 0, 0, 0, 0)''', (habit[0], habit[1]))
         habit_id = cursor.lastrowid  # Get the ID of the newly inserted habit
 
         # Inserting execution data for the last 4 months
@@ -58,7 +60,7 @@ def sql_complete_habit(habit_ID):
     selected_habit = None  # Implement Connection from controller
 
     # Connecting to the database
-    conn = sql.connect('habit_tracker.db')
+    conn = sql.connect("habit_tracker.db")
 
     # Creating a cursor
     cursor = conn.cursor()
@@ -74,14 +76,14 @@ def sql_complete_habit(habit_ID):
 
 def sql_create_habit(habit_name, periodicity):
     # Connecting to the database
-    conn = sql.connect('habit_tracker.db')
+    conn = sql.connect("habit_tracker.db")
 
     # Creating a cursor
     cursor = conn.cursor()
 
     # Insert a new execution for habit
-    cursor.execute(f'''INSERT INTO Habit (HabitName, Periodicity, CurrentStreak,
-                   LongestStreak, NumberOfBreaks) VALUES("{habit_name}", "{periodicity}", 0, 0, 0)''')
+    cursor.execute(f'''INSERT INTO Habit (HabitName, Periodicity, DaysSinceLastCompletion, CurrentStreak,
+                   LongestStreak, NumberOfBreaks) VALUES("{habit_name}", "{periodicity}", 0, 0, 0, 0)''')
 
     # Committing changes and closing the connection and cursor
     conn.commit()
@@ -91,7 +93,7 @@ def sql_create_habit(habit_name, periodicity):
 
 def sql_delete_habit(habit_name):
     # Connecting to the database
-    conn = sql.connect('habit_tracker.db')
+    conn = sql.connect("habit_tracker.db")
 
     # Creating a cursor
     cursor = conn.cursor()
@@ -123,9 +125,44 @@ def sql_return_habit_list():
 
     return habit_names
 
+
+def sql_return_habit(name):
+    # Connecting to database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving data from Habit table
+    cursor.execute('''SELECT * FROM Habit WHERE HabitName = ?''', (name,))
+    habit_data = cursor.fetchone()
+    ID, name, periodicity, days_since_last_completion, current_streak, longest_streak, number_of_breaks = habit_data
+
+    return ID, name, periodicity, days_since_last_completion, current_streak, longest_streak, number_of_breaks
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+def update_habit_data(days_since_last_completion, current_streak, longest_streak, name):
+    # Connecting to database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Modifying data in Habit table
+    cursor.execute("UPDATE Habit SET DaysSinceLastCompletion = ?, CurrentStreak = ?, LongestStreak = ? "
+                   "WHERE HabitName = ?", (days_since_last_completion, current_streak, longest_streak, name))
+    conn.commit()
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
 def check_database():
     # Connecting to the database
-    conn = sql.connect('habit_tracker.db')
+    conn = sql.connect("habit_tracker.db")
 
     # Creating a cursor
     cursor = conn.cursor()
@@ -150,11 +187,10 @@ def check_database():
 
 
 if __name__ == "__main__":
-    # try:
-    #     setup_database()
-    # except sql.OperationalError:  # If database already exists, it shouldn't be created again
-    #     pass
-    # finally:
-    #     check_database()
-    check_database()
+    try:
+        setup_database()
+    except sql.OperationalError:  # If database already exists, it shouldn't be created again
+        pass
+    finally:
+        check_database()
 
