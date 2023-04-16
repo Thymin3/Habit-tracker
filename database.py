@@ -54,26 +54,6 @@ def setup_database():
     conn.close()
 
 
-def sql_complete_habit(habit_ID):
-    # Storing current datetime in a variable
-    current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    selected_habit = None  # Implement Connection from controller
-
-    # Connecting to the database
-    conn = sql.connect("habit_tracker.db")
-
-    # Creating a cursor
-    cursor = conn.cursor()
-
-    # Inserting a new execution for  a habit
-    cursor.execute(f"INSERT INTO HabitExecution (HabitID, DateTime) VALUES ({habit_ID}, {current_datetime})")
-
-    # Commit the changes and close the cursor and the connection
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-
 def sql_create_habit(habit_name, periodicity):
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
@@ -144,7 +124,8 @@ def sql_return_habit(name):
     cursor.close()
     conn.close()
 
-def update_habit_data(days_since_last_completion, current_streak, longest_streak, name):
+
+def sql_update_habit_data(days_since_last_completion, current_streak, longest_streak, name):
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
 
@@ -159,6 +140,68 @@ def update_habit_data(days_since_last_completion, current_streak, longest_streak
     # Closing the cursor and the connection
     cursor.close()
     conn.close()
+
+
+def sql_update_habit_execution_data(habit_name):
+    # Storing current datetime in a variable
+    current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving the habit ID corresponding to the given habit name
+    cursor.execute(f"SELECT ID FROM Habit WHERE HabitName = '{habit_name}'")
+    habit_ID = cursor.fetchone()[0]
+
+    # Inserting a new execution for  a habit
+    cursor.execute(f"INSERT INTO HabitExecution (HabitID, DateTime) VALUES ({habit_ID}, '{current_datetime}')")
+
+    # Committing the changes and closing the cursor and the connection
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def sql_check_if_habit_already_completed(habit_name):
+    # Storing current datetime in a variable
+    current_datetime = datetime.datetime.now()
+
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving the habit ID corresponding to the given habit name
+    cursor.execute(f"SELECT ID FROM Habit WHERE HabitName = '{habit_name}'")
+    habit_ID = cursor.fetchone()[0]
+
+    # Retrieving latest habit execution date from HabitExecution table
+    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = '{habit_ID}'")
+    rows = cursor.fetchall()
+
+    # If previous executions exist, the latest date will be stored in latest_datetime, otherwise it will be set to None
+    if rows:
+        latest_datetime = rows[-1][0]
+        latest_datetime = datetime.datetime.strptime(latest_datetime, '%Y-%m-%d %H:%M:%S')
+    else:
+        latest_datetime = None
+        print("true")
+        return True  # No executions for this habit so far, so first execution can be performed
+
+    one_day = datetime.timedelta(days=1)
+
+    if current_datetime >= latest_datetime + one_day:
+        print("truer")
+        return True  # Last execution is at least 1 day ago
+    else:
+        print(latest_datetime)
+        print("false")
+        return False  # Last execution was on the same day, new completion will not advance streak
+
 
 def check_database():
     # Connecting to the database
@@ -187,10 +230,11 @@ def check_database():
 
 
 if __name__ == "__main__":
-    try:
-        setup_database()
-    except sql.OperationalError:  # If database already exists, it shouldn't be created again
-        pass
-    finally:
-        check_database()
+    # try:
+    #     setup_database()
+    # except sql.OperationalError:  # If database already exists, it shouldn't be created again
+    #     pass
+    # finally:
+    #     check_database()
+    sql_check_if_habit_already_completed("blah")
 

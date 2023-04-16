@@ -61,25 +61,33 @@ def get_habit_list():
     # Passing Habit IDs and habit names
     return habit_names
 
+
 def complete_habit(name):
     # Retrieving data from database
     ID, name, periodicity, days_since_last_completion, current_streak, \
     longest_streak, number_of_breaks = database.sql_return_habit(name)
 
-    # Accessing main logic to modify habit data
-    habit = main.Habit(name, periodicity, days_since_last_completion, current_streak, longest_streak, number_of_breaks)
-    days_since_last_completion, current_streak, longest_streak, name = main.Habit.complete_habit(habit)
+    # Checking if habit was already completed today
+    if database.sql_check_if_habit_already_completed(name):
+        # Accessing main logic to modify habit data
+        habit = main.Habit(name, periodicity, days_since_last_completion, current_streak, longest_streak,
+                           number_of_breaks)
+        days_since_last_completion, current_streak, longest_streak, name = main.Habit.complete_habit(habit)
 
-    # Passing completed data back to database
-    database.update_habit_data(days_since_last_completion, current_streak, longest_streak, name)
+        # Passing completed data back to database
+        database.sql_update_habit_data(days_since_last_completion, current_streak, longest_streak, name)
+        database.sql_update_habit_execution_data(name)
+        return True
+    else:
+        return False
+
 
 # Functions passed to database
+
 
 def delete_habit(name):
     # Passing user input to main logic
     database.sql_delete_habit(name)
-
-
 
 
 # Show a list of habits
@@ -92,8 +100,5 @@ def run_GUI():
     app.mainloop()
 
 
-
-
 if __name__ == '__main__':
-     run_GUI()
-
+    run_GUI()

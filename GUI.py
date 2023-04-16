@@ -174,12 +174,20 @@ class Menu(tk.Tk):
 
         # Removing widgets and adjusting label
         self.remove_all_widgets()
-        self.label.configure(text="Habit completed today.")
+        self.label.configure(text="Habit completed.")
         self.label.pack()
         self.button_back.pack()
 
         # Letting controller update the selected habit
-        controller.complete_habit(habit_to_complete)
+        if controller.complete_habit(habit_to_complete):
+            pass
+        else:
+            self.several_completions_one_day()
+
+
+    def several_completions_one_day(self):
+        self.label.configure(text="Habit already completed today. \nPlease wait until tomorrow to complete it again.")
+        self.label.pack()
 
 # General methods
     def back_click(self):
