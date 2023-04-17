@@ -189,17 +189,13 @@ def sql_check_if_habit_already_completed(habit_name):
         latest_datetime = datetime.datetime.strptime(latest_datetime, '%Y-%m-%d %H:%M:%S')
     else:
         latest_datetime = None
-        print("true")
         return True  # No executions for this habit so far, so first execution can be performed
 
     one_day = datetime.timedelta(days=1)
 
     if current_datetime >= latest_datetime + one_day:
-        print("truer")
         return True  # Last execution is at least 1 day ago
     else:
-        print(latest_datetime)
-        print("false")
         return False  # Last execution was on the same day, new completion will not advance streak
 
 
@@ -230,11 +226,10 @@ def check_database():
 
 
 if __name__ == "__main__":
-    # try:
-    #     setup_database()
-    # except sql.OperationalError:  # If database already exists, it shouldn't be created again
-    #     pass
-    # finally:
-    #     check_database()
-    sql_check_if_habit_already_completed("blah")
+    try:
+        setup_database()
+    except sql.OperationalError:  # If database already exists, it shouldn't be created again
+        pass
+    finally:
+        check_database()
 

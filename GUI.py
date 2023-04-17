@@ -11,7 +11,7 @@ class Menu(tk.Tk):
 
         # Setting up window
         self.title("Habit Tracker")
-        self.geometry("400x300")
+        self.geometry("1000x400")
 
         # Defining widgets
         # General widgets
@@ -40,6 +40,12 @@ class Menu(tk.Tk):
 
         # Completion menu
         self.complete_button = tk.Button(self, text="Complete for today", command=self.complete_habit)
+
+        # Data analysis Menu
+        self.show_habit_table_button = tk.Button(self, text="Show habit table", command=self.show_habit_table)
+        self.show_habits_with_most_breaks = tk.Button(self, text="Show habits that are hardest to keep up with")
+        self.show_habits_with_longest_current_streak = tk.Button(self, text="Show habits with currently longest streak")
+        self.show_habit_with_longest_streak_overall = tk.Button(self, text="Show habits with longest streak overall")
 
         # Pack widgets of main menu
         self.label.pack()
@@ -86,12 +92,14 @@ class Menu(tk.Tk):
     def analyze_click(self):
         # Remove widgets and adjust label
         self.remove_all_widgets()
-        self.label.configure(text="Which habit would you like to analyze?")
+        self.label.configure(text="Data analysis Menu")
 
         # Pack widgets
         self.label.pack()
-        #self.dropdown_menu_habits.pack()
-        self.confirm_button.pack()
+        self.show_habit_table_button.pack()
+        self.show_habits_with_most_breaks.pack()
+        self.show_habits_with_longest_current_streak.pack()
+        self.show_habit_with_longest_streak_overall.pack()
         self.button_back.pack()
 
     def exit_click(self):
@@ -184,10 +192,33 @@ class Menu(tk.Tk):
         else:
             self.several_completions_one_day()
 
-
+    # Message prompted when habit has already been fulfilled on the same day
     def several_completions_one_day(self):
         self.label.configure(text="Habit already completed today. \nPlease wait until tomorrow to complete it again.")
         self.label.pack()
+
+# Data analysis menu methods
+    def show_habit_table(self):
+        self.remove_all_widgets()
+
+        # Creating a table with 5 columns
+        table = ttk.Treeview(self, columns=("habit_name", "periodicity", "current_streak",
+                                            "longest_streak", "number_of_breaks"))
+
+        # Defining column headings
+        table.heading("#0", text="ID")
+        table.heading("habit_name", text="Habit name")
+        table.heading("periodicity", text="Periodicity")
+        table.heading("current_streak", text="Current Streak")
+        table.heading("longest_streak", text="Longest Streak")
+        table.heading("number_of_breaks", text="Number of breaks")
+
+        # Adding data to the table
+        table.insert(parent='', index='end', iid=0, text='1', values=("Swimming", "weekly", "1", "5", "20"))
+        table.insert(parent='', index='end', iid=1, text='2', values=("Reading", "daily", "20", "50", "9"))
+
+        # pack the Treeview to display it
+        table.pack()
 
 # General methods
     def back_click(self):
