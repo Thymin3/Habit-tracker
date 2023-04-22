@@ -2,7 +2,6 @@ import sqlite3 as sql
 import datetime
 import controller
 
-
 def setup_database():
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
@@ -53,6 +52,138 @@ def setup_database():
     cursor.close()
     conn.close()
 
+
+def sql_get_latest_streak(habit_ID):
+    # Connecting to database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving the periodicity corresponding to the given habit ID
+    cursor.execute(f"SELECT Periodicity FROM Habit WHERE ID = {habit_ID}")
+    periodicity = cursor.fetchone()
+
+    # Counting the total number of executions for the habit
+    cursor.execute(f"SELECT COUNT(*) FROM HabitExecution WHERE HabitID = {habit_ID}")
+    total_execution_count = cursor.fetchone()[0]
+
+    # Getting the latest streak for the habit
+    latest_streak = 0
+    if periodicity == "daily":
+        limit = 1
+    else:
+        limit = 7  # Periodicity is weekly
+    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID} ORDER BY DateTime DESC")
+    execution_dates = cursor.fetchall()
+    if len(execution_dates) > 0:
+        current_date = datetime.datetime.strptime(execution_dates[0][0], "%Y-%m-%d %H:%M:%S")
+        if (datetime.datetime.now() - current_date).days <= limit:  # Latest execution over 24h/ 1 week ago?
+            latest_streak = 1
+            for i in range(1, len(execution_dates)):
+                previous_date = datetime.datetime.strptime(execution_dates[i][0], "%Y-%m-%d %H:%M:%S")
+                if (current_date - previous_date).days <= limit:
+                    latest_streak += 1
+                    current_date = previous_date
+                else:
+                    break
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return total_execution_count, latest_streak
+
+
+def sql_get_longest_streak(habit_ID):
+    # Connecting to database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving the periodicity corresponding to the given habit ID
+    cursor.execute(f"SELECT Periodicity FROM Habit WHERE ID = {habit_ID}")
+    periodicity = cursor.fetchone()
+
+    # Getting the longest streak for the habit
+    current_streak = 0  # Current streak in the loop, not necessarily the latest streak!
+    longest_streak = 0
+    if periodicity == "daily":
+        limit = 1
+    else:
+        limit = 7  # Periodicity is weekly
+    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID} ORDER BY DateTime DESC")
+    execution_dates = cursor.fetchall()
+    if len(execution_dates) > 0:
+        current_date = datetime.datetime.strptime(execution_dates[0][0], "%Y-%m-%d %H:%M:%S")
+        if (datetime.datetime.now() - current_date).days <= limit:  # Latest execution over 24h/ 1 week ago?
+            current_streak = 1
+            longest_streak = 1
+            for i in range(1, len(execution_dates)):
+                previous_date = datetime.datetime.strptime(execution_dates[i][0], "%Y-%m-%d %H:%M:%S")
+                if (current_date - previous_date).days <= limit:
+                    current_streak += 1
+                    current_date = previous_date
+                else:
+                    if current_streak > longest_streak:
+                        longest_streak = current_streak
+                    current_streak = 0
+
+            if current_streak > longest_streak:
+                longest_streak = current_streak
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return longest_streak
+
+
+def sql_get_days_since_completion(habit_ID):
+    # Connecting to database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving the latest execution corresponding to the given habit ID
+    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID} ORDER BY DateTime DESC")
+    execution_date = cursor.fetchone()[0]
+
+    # Calculating how many full days passed since the last execution
+    time_interval = datetime.datetime.now() - datetime.datetime.strptime(execution_date, '%Y-%m-%d %H:%M:%S')
+    days_since_last_completion = time_interval.days
+
+    return days_since_last_completion
+
+
+def update_database():
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Get all habit IDs
+    cursor.execute("SELECT ID FROM Habit")
+    habit_IDs = cursor.fetchall()
+    habit_IDs = [i[0] for i in habit_IDs]
+    print(habit_IDs)
+
+    # Loop through each habit ID and update the stats
+    for i in habit_IDs:
+        total_execution_count, latest_streak = sql_get_latest_streak(i)
+        longest_streak = sql_get_longest_streak(i)
+        days_since_last_completion = sql_get_days_since_completion(i)
+
+        cursor.execute("UPDATE Habit SET DaysSinceLastCompletion=?, CurrentStreak=?, LongestStreak=?, NumberOfBreaks=? "
+                       "WHERE ID=?",(days_since_last_completion, latest_streak, longest_streak, 0, i))
+
+    # Closing the cursor and the connection
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def sql_create_habit(habit_name, periodicity):
     # Connecting to the database
@@ -165,97 +296,6 @@ def sql_update_habit_execution_data(habit_name):
     conn.close()
 
 
-def sql_get_latest_streak(habit_name):
-    # Connecting to database
-    conn = sql.connect("habit_tracker.db")
-
-    # Creating a cursor
-    cursor = conn.cursor()
-
-    # Retrieving the habit ID and periodicity corresponding to the given habit name
-    cursor.execute(f"SELECT ID, Periodicity FROM Habit WHERE HabitName = '{habit_name}'")
-    result = cursor.fetchone()
-    habit_ID = result[0]
-    periodicity = result[1]
-
-    # Counting the total number of executions for the habit
-    cursor.execute(f"SELECT COUNT(*) FROM HabitExecution WHERE HabitID = {habit_ID}")
-    total_execution_count = cursor.fetchone()[0]
-
-    # Getting the latest streak for the habit
-    latest_streak = 0
-    if periodicity == "daily":
-        limit = 1
-    else:
-        limit = 7  # Periodicity is weekly
-    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID} ORDER BY DateTime DESC")
-    execution_dates = cursor.fetchall()
-    if len(execution_dates) > 0:
-        current_date = datetime.datetime.strptime(execution_dates[0][0], "%Y-%m-%d %H:%M:%S")
-        if (datetime.datetime.now() - current_date).days <= limit:  # Latest execution over 24h/ 1 week ago?
-            latest_streak = 1
-            for i in range(1, len(execution_dates)):
-                previous_date = datetime.datetime.strptime(execution_dates[i][0], "%Y-%m-%d %H:%M:%S")
-                if (current_date - previous_date).days <= limit:
-                    latest_streak += 1
-                    current_date = previous_date
-                else:
-                    break
-
-    # Committing the changes and closing the cursor and the connection
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-    return total_execution_count, latest_streak
-
-def sql_get_longest_streak(habit_name):
-    # Connecting to database
-    conn = sql.connect("habit_tracker.db")
-
-    # Creating a cursor
-    cursor = conn.cursor()
-
-    # Retrieving the habit ID and periodicity corresponding to the given habit name
-    cursor.execute(f"SELECT ID, Periodicity FROM Habit WHERE HabitName = '{habit_name}'")
-    result = cursor.fetchone()
-    habit_ID = result[0]
-    periodicity = result[1]
-
-    # Getting the longest streak for the habit
-    current_streak = 0  # Current streak in the loop, not necessarily the latest streak!
-    longest_streak = 0
-    if periodicity == "daily":
-        limit = 1
-    else:
-        limit = 7  # Periodicity is weekly
-    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID} ORDER BY DateTime DESC")
-    execution_dates = cursor.fetchall()
-    if len(execution_dates) > 0:
-        current_date = datetime.datetime.strptime(execution_dates[0][0], "%Y-%m-%d %H:%M:%S")
-        if (datetime.datetime.now() - current_date).days <= limit:  # Latest execution over 24h/ 1 week ago?
-            current_streak = 1
-            longest_streak = 1
-            for i in range(1, len(execution_dates)):
-                previous_date = datetime.datetime.strptime(execution_dates[i][0], "%Y-%m-%d %H:%M:%S")
-                if (current_date - previous_date).days <= limit:
-                    current_streak += 1
-                    current_date = previous_date
-                else:
-                    if current_streak > longest_streak:
-                        longest_streak = current_streak
-                    current_streak = 0
-
-            if current_streak > longest_streak:
-                longest_streak = current_streak
-
-    # Committing the changes and closing the cursor and the connection
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-    return longest_streak
-
 def sql_check_if_habit_already_completed(habit_name):
     # Storing current datetime in a variable
     current_datetime = datetime.datetime.now()
@@ -319,10 +359,10 @@ def check_database():
 if __name__ == "__main__":
     try:
         setup_database()
+        update_database()
     except sql.OperationalError:  # If database already exists, it shouldn't be created again
         pass
     finally:
         check_database()
-        print(sql_get_latest_streak("test"))
-        print(sql_get_longest_streak("test"))
+
 

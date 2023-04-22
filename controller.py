@@ -82,6 +82,12 @@ def complete_habit(name):
         return False
 
 
+def pass_streak_data():
+    # Retrieving data from database
+    total_execution_count, latest_streak = database.sql_get_latest_streak()
+    longest_streak = database.sql_get_longest_streak()
+
+
 # Functions passed to database
 
 
