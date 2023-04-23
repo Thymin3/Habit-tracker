@@ -11,7 +11,7 @@ class Menu(tk.Tk):
 
         # Setting up window
         self.title("Habit Tracker")
-        self.geometry("1000x400")
+        self.geometry("1400x400")
 
         # Defining widgets
         # General widgets
@@ -41,11 +41,12 @@ class Menu(tk.Tk):
         # Completion menu
         self.complete_button = tk.Button(self, text="Complete for today", command=self.complete_habit)
 
-        # Data analysis Menu
+        # Data analysis menu
         self.show_habit_table_button = tk.Button(self, text="Show habit table", command=self.show_habit_table)
         self.show_habits_with_most_breaks = tk.Button(self, text="Show habits that are hardest to keep up with")
         self.show_habits_with_longest_current_streak = tk.Button(self, text="Show habits with currently longest streak")
         self.show_habit_with_longest_streak_overall = tk.Button(self, text="Show habits with longest streak overall")
+        self.back_to_analyze_menu_button = tk.Button(self, text="Back to data analysis menu", command=self.analyze_click)
 
         # Pack widgets of main menu
         self.label.pack()
@@ -180,7 +181,7 @@ class Menu(tk.Tk):
     def complete_habit(self):
         habit_to_complete = self.dropdown_habit_list.get()
 
-        # Removing widgets and adjusting label
+        # Removing widgets, adjusting label and packing back button
         self.remove_all_widgets()
         self.label.configure(text="Habit completed.")
         self.label.pack()
@@ -199,26 +200,30 @@ class Menu(tk.Tk):
 
 # Data analysis menu methods
     def show_habit_table(self):
+        # Removing all widgets
         self.remove_all_widgets()
 
-        # Creating a table with 5 columns
-        table = ttk.Treeview(self, columns=("habit_name", "periodicity", "current_streak",
-                                            "longest_streak", "number_of_breaks"))
+        # Creating a table with 6 columns
+        table = ttk.Treeview(self, columns=("habit_name", "periodicity", "days_since_last_execution",
+                                            "current_streak", "longest_streak", "number_of_breaks"))
 
         # Defining column headings
-        table.heading("#0", text="ID")
+        #table.heading("ID", text="ID")
         table.heading("habit_name", text="Habit name")
         table.heading("periodicity", text="Periodicity")
-        table.heading("current_streak", text="Current Streak")
-        table.heading("longest_streak", text="Longest Streak")
+        table.heading("days_since_last_execution", text="Days since last execution")
+        table.heading("current_streak", text="Current streak")
+        table.heading("longest_streak", text="Longest streak")
         table.heading("number_of_breaks", text="Number of breaks")
 
         # Adding data to the table
-        table.insert(parent='', index='end', iid=0, text='1', values=("Swimming", "weekly", "1", "5", "20"))
-        table.insert(parent='', index='end', iid=1, text='2', values=("Reading", "daily", "20", "50", "9"))
+        for i, row in enumerate(controller.give_habit_list_by_ID()):
+            table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
 
-        # pack the Treeview to display it
+        # Packing the table + back buttons
         table.pack()
+        self.back_to_analyze_menu_button.pack()
+        self.button_back.pack()
 
 # General methods
     def back_click(self):

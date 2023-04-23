@@ -406,6 +406,23 @@ def sql_check_if_habit_already_completed(habit_name):
         return False  # Last execution was on the same day, new completion will not advance streak
 
 
+def sql_get_habit_list_by_ID():
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving data from the Habit table
+    cursor.execute('''SELECT * FROM Habit''')
+    habit_rows = cursor.fetchall()
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return habit_rows
+
 def check_database():
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")

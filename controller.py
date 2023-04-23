@@ -96,6 +96,13 @@ def delete_habit(name):
     database.sql_delete_habit(name)
 
 
+# Functions passed to GUI
+
+def give_habit_list_by_ID():
+    print(database.sql_get_habit_list_by_ID())
+    return database.sql_get_habit_list_by_ID()
+
+
 # Show a list of habits
 def get_habits():
     pass
