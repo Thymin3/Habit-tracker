@@ -1,6 +1,8 @@
 import sqlite3 as sql
 import datetime
+import random
 import controller
+
 
 def setup_database():
     # Connecting to the database
@@ -53,6 +55,34 @@ def setup_database():
     conn.close()
 
 
+def delete_random_executions(percentage):
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Counting the number of rows in the HabitExecution table
+    cursor.execute("SELECT COUNT(*) FROM HabitExecution")
+    total_rows = cursor.fetchone()[0]
+
+    # Calculating the number of rows to delete
+    num_rows_to_delete = int(total_rows * percentage / 100)
+
+    # Selecting a random subset of rows to delete
+    cursor.execute(f"SELECT HabitID, DateTime FROM HabitExecution ORDER BY RANDOM() LIMIT {num_rows_to_delete}")
+    rows_to_delete = cursor.fetchall()
+
+    # Deleting the selected rows
+    for row in rows_to_delete:
+        cursor.execute("DELETE FROM HabitExecution WHERE HabitID = ? AND DateTime = ?", row)
+
+    # Closing the cursor and the connection
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
 def sql_get_latest_streak(habit_ID):
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
@@ -62,7 +92,7 @@ def sql_get_latest_streak(habit_ID):
 
     # Retrieving the periodicity corresponding to the given habit ID
     cursor.execute(f"SELECT Periodicity FROM Habit WHERE ID = {habit_ID}")
-    periodicity = cursor.fetchone()
+    periodicity = cursor.fetchone()[0]
 
     # Counting the total number of executions for the habit
     cursor.execute(f"SELECT COUNT(*) FROM HabitExecution WHERE HabitID = {habit_ID}")
@@ -104,34 +134,30 @@ def sql_get_longest_streak(habit_ID):
 
     # Retrieving the periodicity corresponding to the given habit ID
     cursor.execute(f"SELECT Periodicity FROM Habit WHERE ID = {habit_ID}")
-    periodicity = cursor.fetchone()
+    periodicity = cursor.fetchone()[0]
 
     # Getting the longest streak for the habit
-    current_streak = 0  # Current streak in the loop, not necessarily the latest streak!
+    current_streak = 0
     longest_streak = 0
     if periodicity == "daily":
         limit = 1
     else:
         limit = 7  # Periodicity is weekly
-    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID} ORDER BY DateTime DESC")
+    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID} ")
     execution_dates = cursor.fetchall()
-    if len(execution_dates) > 0:
-        current_date = datetime.datetime.strptime(execution_dates[0][0], "%Y-%m-%d %H:%M:%S")
-        if (datetime.datetime.now() - current_date).days <= limit:  # Latest execution over 24h/ 1 week ago?
-            current_streak = 1
-            longest_streak = 1
-            for i in range(1, len(execution_dates)):
-                previous_date = datetime.datetime.strptime(execution_dates[i][0], "%Y-%m-%d %H:%M:%S")
-                if (current_date - previous_date).days <= limit:
-                    current_streak += 1
-                    current_date = previous_date
-                else:
-                    if current_streak > longest_streak:
-                        longest_streak = current_streak
-                    current_streak = 0
 
-            if current_streak > longest_streak:
-                longest_streak = current_streak
+    for i in range(len(execution_dates)):
+        if i == 0:
+            current_streak = 1
+        else:
+            delta = datetime.datetime.strptime(execution_dates[i][0], '%Y-%m-%d %H:%M:%S') \
+                    - datetime.datetime.strptime(execution_dates[i-1][0], '%Y-%m-%d %H:%M:%S')
+            if delta.days <= limit:
+                current_streak += 1
+            else:
+                current_streak = 1
+        if current_streak > longest_streak:
+            longest_streak = current_streak
 
     # Closing the cursor and the connection
     cursor.close()
@@ -155,7 +181,54 @@ def sql_get_days_since_completion(habit_ID):
     time_interval = datetime.datetime.now() - datetime.datetime.strptime(execution_date, '%Y-%m-%d %H:%M:%S')
     days_since_last_completion = time_interval.days
 
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
     return days_since_last_completion
+
+
+def sql_get_number_of_breaks(habit_ID):
+    # Connecting to database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving the periodicity corresponding to the given habit ID
+    cursor.execute(f"SELECT Periodicity FROM Habit WHERE ID = {habit_ID}")
+    periodicity = cursor.fetchone()[0]
+
+    # Retrieving the execution dates corresponding to the given habit ID
+    cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID}")
+    execution_dates = cursor.fetchall()
+
+    # Calculating the break count
+    break_count = 0
+    if periodicity == "daily":
+        limit = 1
+    else:
+        limit = 7  # Periodicity is weekly
+    current_streak = 0
+    for i in range(len(execution_dates)):
+        current_date = datetime.datetime.strptime(execution_dates[i][0], '%Y-%m-%d %H:%M:%S')
+        if i == 0:
+            previous_date = current_date
+            current_streak += 1
+        else:
+            delta = current_date - previous_date
+            if delta.days > limit:
+                break_count += 1
+                current_streak = 1
+            else:
+                current_streak += 1
+            previous_date = current_date
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return break_count
 
 
 def update_database():
@@ -169,21 +242,24 @@ def update_database():
     cursor.execute("SELECT ID FROM Habit")
     habit_IDs = cursor.fetchall()
     habit_IDs = [i[0] for i in habit_IDs]
-    print(habit_IDs)
 
     # Loop through each habit ID and update the stats
     for i in habit_IDs:
         total_execution_count, latest_streak = sql_get_latest_streak(i)
         longest_streak = sql_get_longest_streak(i)
         days_since_last_completion = sql_get_days_since_completion(i)
+        break_count = sql_get_number_of_breaks(i)
 
         cursor.execute("UPDATE Habit SET DaysSinceLastCompletion=?, CurrentStreak=?, LongestStreak=?, NumberOfBreaks=? "
-                       "WHERE ID=?",(days_since_last_completion, latest_streak, longest_streak, 0, i))
+                       "WHERE ID=?", (days_since_last_completion, latest_streak, longest_streak, break_count, i))
+
+        print(total_execution_count)
 
     # Closing the cursor and the connection
     conn.commit()
     cursor.close()
     conn.close()
+
 
 def sql_create_habit(habit_name, periodicity):
     # Connecting to the database
@@ -359,6 +435,7 @@ def check_database():
 if __name__ == "__main__":
     try:
         setup_database()
+        delete_random_executions(50)
         update_database()
     except sql.OperationalError:  # If database already exists, it shouldn't be created again
         pass
