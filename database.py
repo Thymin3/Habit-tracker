@@ -151,7 +151,7 @@ def sql_get_longest_streak(habit_ID):
             current_streak = 1
         else:
             delta = datetime.datetime.strptime(execution_dates[i][0], '%Y-%m-%d %H:%M:%S') \
-                    - datetime.datetime.strptime(execution_dates[i-1][0], '%Y-%m-%d %H:%M:%S')
+                    - datetime.datetime.strptime(execution_dates[i - 1][0], '%Y-%m-%d %H:%M:%S')
             if delta.days <= limit:
                 current_streak += 1
             else:
@@ -175,7 +175,11 @@ def sql_get_days_since_completion(habit_ID):
 
     # Retrieving the latest execution corresponding to the given habit ID
     cursor.execute(f"SELECT DateTime FROM HabitExecution WHERE HabitID = {habit_ID} ORDER BY DateTime DESC")
-    execution_date = cursor.fetchone()[0]
+    try:
+        execution_date = cursor.fetchone()[0]
+    except TypeError:  # If there are no executions days since last execution will be set to None
+        days_since_last_completion = None
+        return days_since_last_completion
 
     # Calculating how many full days passed since the last execution
     time_interval = datetime.datetime.now() - datetime.datetime.strptime(execution_date, '%Y-%m-%d %H:%M:%S')
@@ -252,8 +256,6 @@ def update_database():
 
         cursor.execute("UPDATE Habit SET DaysSinceLastCompletion=?, CurrentStreak=?, LongestStreak=?, NumberOfBreaks=? "
                        "WHERE ID=?", (days_since_last_completion, latest_streak, longest_streak, break_count, i))
-
-        print(total_execution_count)
 
     # Closing the cursor and the connection
     conn.commit()
@@ -406,6 +408,7 @@ def sql_check_if_habit_already_completed(habit_name):
         return False  # Last execution was on the same day, new completion will not advance streak
 
 
+# Functions used in data analysis menu
 def sql_get_habit_list_by_ID():
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
@@ -414,7 +417,7 @@ def sql_get_habit_list_by_ID():
     cursor = conn.cursor()
 
     # Retrieving data from the Habit table
-    cursor.execute('''SELECT * FROM Habit''')
+    cursor.execute('''SELECT * FROM Habit ORDER BY HabitName''')
     habit_rows = cursor.fetchall()
 
     # Closing the cursor and the connection
@@ -422,6 +425,61 @@ def sql_get_habit_list_by_ID():
     conn.close()
 
     return habit_rows
+
+
+def sql_get_habit_list_by_break_count():
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving data from the Habit table
+    cursor.execute('''SELECT * FROM Habit ORDER BY NumberOfBreaks DESC''')
+    habit_rows = cursor.fetchall()
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return habit_rows
+
+
+def sql_get_habit_list_by_current_streak():
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving data from the Habit table
+    cursor.execute('''SELECT * FROM Habit ORDER BY CurrentStreak DESC''')
+    habit_rows = cursor.fetchall()
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return habit_rows
+
+
+def sql_get_habit_list_by_longest_streak():
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving data from the Habit table
+    cursor.execute('''SELECT * FROM Habit ORDER BY LongestStreak DESC''')
+    habit_rows = cursor.fetchall()
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return habit_rows
+
 
 def check_database():
     # Connecting to the database
@@ -450,13 +508,13 @@ def check_database():
 
 
 if __name__ == "__main__":
-    try:
-        setup_database()
-        delete_random_executions(50)
-        update_database()
-    except sql.OperationalError:  # If database already exists, it shouldn't be created again
-        pass
-    finally:
-        check_database()
-
-
+    # try:
+    #     setup_database()
+    #     delete_random_executions(50)
+    #     update_database()
+    # except sql.OperationalError:  # If database already exists, it shouldn't be created again
+    #     pass
+    # finally:
+    #     check_database()
+    sql_get_habit_list_by_break_count()
+    sql_get_habit_list_by_ID()

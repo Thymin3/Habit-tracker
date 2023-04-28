@@ -42,8 +42,6 @@ class Habit:
         else:
             pass
 
-    def check_for_breaks(self):
-        pass
 
 if __name__ == '__main__':
     controller.run_GUI()

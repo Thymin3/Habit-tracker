@@ -42,11 +42,27 @@ class Menu(tk.Tk):
         self.complete_button = tk.Button(self, text="Complete for today", command=self.complete_habit)
 
         # Data analysis menu
+        # Buttons
         self.show_habit_table_button = tk.Button(self, text="Show habit table", command=self.show_habit_table)
-        self.show_habits_with_most_breaks = tk.Button(self, text="Show habits that are hardest to keep up with")
-        self.show_habits_with_longest_current_streak = tk.Button(self, text="Show habits with currently longest streak")
-        self.show_habit_with_longest_streak_overall = tk.Button(self, text="Show habits with longest streak overall")
-        self.back_to_analyze_menu_button = tk.Button(self, text="Back to data analysis menu", command=self.analyze_click)
+        self.show_habits_with_most_breaks = tk.Button(self, text="Show habits that are hardest to keep up with",
+                                                      command=self.show_habits_with_most_breaks)
+        self.show_habits_with_longest_current_streak = tk.Button(self, text="Show habits with currently longest streak",
+                                                                 command=self.show_habits_with_longest_current_streak)
+        self.show_habit_with_longest_streak_overall = tk.Button(self, text="Show habits with longest streak overall",
+                                                                command=self.show_habits_with_longest_longest_streak)
+        self.back_to_analyze_menu_button = tk.Button(self, text="Back to data analysis menu",
+                                                     command=self.analyze_click)
+        # Habit Table
+        self.habit_table = ttk.Treeview(self, columns=("habit_name", "periodicity", "days_since_last_execution",
+                                                       "current_streak", "longest_streak", "number_of_breaks"))
+
+        # Defining column headings for habit table
+        self.habit_table.heading("habit_name", text="Habit name")
+        self.habit_table.heading("periodicity", text="Periodicity")
+        self.habit_table.heading("days_since_last_execution", text="Days since last execution")
+        self.habit_table.heading("current_streak", text="Current streak")
+        self.habit_table.heading("longest_streak", text="Longest streak")
+        self.habit_table.heading("number_of_breaks", text="Number of breaks")
 
         # Pack widgets of main menu
         self.label.pack()
@@ -56,7 +72,7 @@ class Menu(tk.Tk):
         self.button_analyze_habits.pack()
         self.button_exit.pack()
 
-# Main menu methods
+    # Main menu methods
     def create_click(self):
         # Remove widgets and set label to creation menu
         self.remove_all_widgets()
@@ -107,7 +123,7 @@ class Menu(tk.Tk):
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.destroy()
 
-# Creation menu methods
+    # Creation menu methods
     def daily_click(self):
         # Remove creation menu buttons and adjusting label
         self.remove_all_widgets()
@@ -143,7 +159,6 @@ class Menu(tk.Tk):
             self.create_habit_daily.pack_forget()
             self.label.configure(text="Daily habit created!")
 
-
         # Updating habit dropdown menu
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
@@ -162,7 +177,7 @@ class Menu(tk.Tk):
         # Updating habit dropdown menu
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
-# Deletion menu methods
+    # Deletion menu methods
     def delete_habit(self):
         habit_to_delete = self.dropdown_habit_list.get()
         # Removing widgets and adjusting label
@@ -177,7 +192,7 @@ class Menu(tk.Tk):
         # Updating habit dropdown menu
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
-# Completion menu methods
+    # Completion menu methods
     def complete_habit(self):
         habit_to_complete = self.dropdown_habit_list.get()
 
@@ -198,34 +213,73 @@ class Menu(tk.Tk):
         self.label.configure(text="Habit already completed today. \nPlease wait until tomorrow to complete it again.")
         self.label.pack()
 
-# Data analysis menu methods
+    # Data analysis menu methods
+
     def show_habit_table(self):
         # Removing all widgets
         self.remove_all_widgets()
 
-        # Creating a table with 6 columns
-        table = ttk.Treeview(self, columns=("habit_name", "periodicity", "days_since_last_execution",
-                                            "current_streak", "longest_streak", "number_of_breaks"))
+        # Deleting all potentially existing rows from habit table
+        self.habit_table.delete(*self.habit_table.get_children())
 
-        # Defining column headings
-        #table.heading("ID", text="ID")
-        table.heading("habit_name", text="Habit name")
-        table.heading("periodicity", text="Periodicity")
-        table.heading("days_since_last_execution", text="Days since last execution")
-        table.heading("current_streak", text="Current streak")
-        table.heading("longest_streak", text="Longest streak")
-        table.heading("number_of_breaks", text="Number of breaks")
-
-        # Adding data to the table
+        # Adding data to the habit table
         for i, row in enumerate(controller.give_habit_list_by_ID()):
-            table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
+            self.habit_table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
 
         # Packing the table + back buttons
-        table.pack()
+        self.habit_table.pack()
         self.back_to_analyze_menu_button.pack()
         self.button_back.pack()
 
-# General methods
+    def show_habits_with_most_breaks(self):
+        # Removing all widgets
+        self.remove_all_widgets()
+
+        # Deleting all potentially existing rows from habit table
+        self.habit_table.delete(*self.habit_table.get_children())
+
+        # Adding data to the habit table
+        for i, row in enumerate(controller.give_habit_list_by_break_count()):
+            self.habit_table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
+
+        # Packing the table + back buttons
+        self.habit_table.pack()
+        self.back_to_analyze_menu_button.pack()
+        self.button_back.pack()
+
+    def show_habits_with_longest_current_streak(self):
+        # Removing all widgets
+        self.remove_all_widgets()
+
+        # Deleting all potentially existing rows from habit table
+        self.habit_table.delete(*self.habit_table.get_children())
+
+        # Adding data to the habit table
+        for i, row in enumerate(controller.give_habit_list_by_current_streak()):
+            self.habit_table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
+
+        # Packing the table + back buttons
+        self.habit_table.pack()
+        self.back_to_analyze_menu_button.pack()
+        self.button_back.pack()
+
+    def show_habits_with_longest_longest_streak(self):
+        # Removing all widgets
+        self.remove_all_widgets()
+
+        # Deleting all potentially existing rows from habit table
+        self.habit_table.delete(*self.habit_table.get_children())
+
+        # Adding data to the habit table
+        for i, row in enumerate(controller.give_habit_list_by_longest_streak()):
+            self.habit_table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
+
+        # Packing the table + back buttons
+        self.habit_table.pack()
+        self.back_to_analyze_menu_button.pack()
+        self.button_back.pack()
+
+    # General methods
     def back_click(self):
         # Remove widgets and setting label to start menu
         self.remove_all_widgets()

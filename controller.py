@@ -99,13 +99,31 @@ def delete_habit(name):
 # Functions passed to GUI
 
 def give_habit_list_by_ID():
-    print(database.sql_get_habit_list_by_ID())
+    # Updating streak and break data in database
+    database.update_database()
+
     return database.sql_get_habit_list_by_ID()
 
 
-# Show a list of habits
-def get_habits():
-    pass
+def give_habit_list_by_break_count():
+    # Updating streak and break data in database
+    database.update_database()
+
+    return database.sql_get_habit_list_by_break_count()
+
+
+def give_habit_list_by_current_streak():
+    # Updating streak and break data in database
+    database.update_database()
+
+    return database.sql_get_habit_list_by_current_streak()
+
+
+def give_habit_list_by_longest_streak():
+    # Updating streak and break data in database
+    database.update_database()
+
+    return database.sql_get_habit_list_by_longest_streak()
 
 
 def run_GUI():
