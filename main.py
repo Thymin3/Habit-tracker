@@ -17,30 +17,30 @@ class Habit:
         habit = cls(name, periodicity)  # Creating a new habit instance
         return habit.name, habit.periodicity
 
-    def complete_habit(self):
-        self.days_since_last_completion = 0
-        self.update_current_streak()
-        self.update_longest_streak()
+    # def complete_habit(self):
+    #     self.days_since_last_completion = 0
+    #     self.update_current_streak()
+    #     self.update_longest_streak()
+    #
+    #     return self.days_since_last_completion, self.current_streak, self.longest_streak, self.name
 
-        return self.days_since_last_completion, self.current_streak, self.longest_streak, self.name
-
-    def update_current_streak(self):
-        self.current_streak = self.current_streak + 1
-
-    def update_longest_streak(self):
-        if self.longest_streak < self.current_streak:
-            self.longest_streak = self.current_streak
-        else:
-            pass
-
-    def break_streak(self):
-        if self.periodicity == "weekly":
-            if self.days_since_last_completion > 7:
-                self.current_streak = 0
-        elif self.days_since_last_completion > 1:
-            self.current_streak = 0
-        else:
-            pass
+    # def update_current_streak(self):
+    #     self.current_streak = self.current_streak + 1
+    #
+    # def update_longest_streak(self):
+    #     if self.longest_streak < self.current_streak:
+    #         self.longest_streak = self.current_streak
+    #     else:
+    #         pass
+    #
+    # def break_streak(self):
+    #     if self.periodicity == "weekly":
+    #         if self.days_since_last_completion > 7:
+    #             self.current_streak = 0
+    #     elif self.days_since_last_completion > 1:
+    #         self.current_streak = 0
+    #     else:
+    #         pass
 
 
 if __name__ == '__main__':

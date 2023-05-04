@@ -6,12 +6,14 @@ import database
 # Functions passed to main
 
 def create_daily_habit(name, periodicity="daily"):
-    """Used for receiving a call from the GUI to create a habit + checking for duplicates in database +
-     generating a new habit in the database in case no duplicates exist.
+    """
+    Used for receiving a call from the GUI to create a habit + checking for duplicates in database +
+    generating a new habit in the database in case no duplicates exist.
 
-        Since the command was performed by the user over the daily button, the periodicity is set to daily by default.
-        The habit name is defined by the user in the entry widget.
-        A new habit will be generated in the habit_tracker database in case it does not exist yet."""
+    Since the command was performed by the user over the daily button, the periodicity is set to daily by default.
+    The habit name is defined by the user in the entry widget.
+    A new habit will be generated in the habit_tracker.db database in case it does not exist yet.
+    """
 
     # Passing user input to main logic
     new_habit_name, new_habit_periodicity = main.Habit.create_habit(name, periodicity)
@@ -36,7 +38,7 @@ def create_weekly_habit(name, periodicity="weekly"):
 
         Since the command was performed by the user over the weekly button, the periodicity is set to weekly by default.
         The habit name is defined by the user in the entry widget.
-        A new habit will be generated in the habit_tracker database in case it does not exist yet."""
+        A new habit will be generated in the habit_tracker.db database in case it does not exist yet."""
 
     # Passing user input to main logic
     new_habit_name, new_habit_periodicity = main.Habit.create_habit(name, periodicity)
@@ -70,9 +72,9 @@ def complete_habit(name):
     # Checking if habit was already completed today
     if database.sql_check_if_habit_already_completed(name):
         # Accessing main logic to modify habit data
-        habit = main.Habit(name, periodicity, days_since_last_completion, current_streak, longest_streak,
-                           number_of_breaks)
-        days_since_last_completion, current_streak, longest_streak, name = main.Habit.complete_habit(habit)
+        # habit = main.Habit(name, periodicity, days_since_last_completion, current_streak, longest_streak,
+        #                    number_of_breaks)
+        # days_since_last_completion, current_streak, longest_streak, name = main.Habit.complete_habit(habit)
 
         # Passing completed data back to database
         database.sql_update_habit_data(days_since_last_completion, current_streak, longest_streak, name)
@@ -83,6 +85,7 @@ def complete_habit(name):
 
 
 def pass_streak_data():
+    # NECESSARY?
     # Retrieving data from database
     total_execution_count, latest_streak = database.sql_get_latest_streak()
     longest_streak = database.sql_get_longest_streak()
@@ -92,7 +95,7 @@ def pass_streak_data():
 
 
 def delete_habit(name):
-    # Passing user input to main logic
+    # Deleting habit data from database
     database.sql_delete_habit(name)
 
 

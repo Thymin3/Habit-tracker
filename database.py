@@ -5,6 +5,25 @@ import controller
 
 
 def setup_database():
+    """
+    Sets up the Habit Tracker database by creating the Habit and HabitExecution tables
+    and filling them with sample data.
+
+    The Habit table stores information about the habits being tracked, including the habit name, periodicity,
+    days since last completion, current streak, longest streak, and number of breaks.
+
+    The HabitExecution table stores information about each instance of a habit being completed,
+    including the habit ID and the date and time of completion.
+
+    This function also populates the Habit table with example data for five habits and the HabitExecution table
+    with execution data for the last 4 months.
+
+    Args:
+    None
+
+    Returns:
+    None
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -56,6 +75,27 @@ def setup_database():
 
 
 def delete_random_executions(percentage):
+    """
+    Deletes a random subset of habit execution records from the "HabitExecution" table in the database in order to make
+    the data more believable.
+
+    Args:
+    - percentage (float): The percentage of total habit execution records to delete. Must be a float between 0 and 100.
+
+    Returns:
+    - None
+
+    Raises:
+    - ValueError: If percentage is not a float between 0 and 100.
+
+    This function connects to the "habit_tracker.db" database, selects a random subset of habit execution records from
+    the "HabitExecution" table based on the given percentage, and deletes them from the table.
+    The subset is selected randomly using the SQL "RANDOM()" function. The number of rows to delete is calculated
+    based on the percentage and the total number of rows in the table.
+
+    Example usage:
+    - delete_random_executions(10)  # Deletes 10% of habit execution records randomly from the table.
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -84,6 +124,17 @@ def delete_random_executions(percentage):
 
 
 def sql_get_latest_streak(habit_ID):
+    """
+    Returns the total number of habit executions and the length of the latest streak for the habit
+    with the given habit ID.
+
+    Args:
+        habit_ID (int): The ID of the habit to retrieve the latest streak for.
+
+    Returns:
+        tuple: A tuple containing two integers: the total number of habit executions and the length of
+        the latest streak. If there are no habit executions for the given habit, both values will be 0.
+    """
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
 
@@ -126,6 +177,21 @@ def sql_get_latest_streak(habit_ID):
 
 
 def sql_get_longest_streak(habit_ID):
+    """
+    Retrieves the longest streak for a given habit ID from the database.
+
+    Args:
+        habit_ID (int): The ID of the habit to retrieve the longest streak for.
+
+    Returns:
+        int: The length of the longest streak for the habit.
+
+    This function connects to the "habit_tracker.db" database, retrieves the periodicity
+    of the habit corresponding to the given habit ID, and then calculates the longest streak
+    for the habit based on the execution dates of the habit. The streak length is defined as the
+    number of consecutive days (if the periodicity is daily) or weeks (if the periodicity is weekly)
+    that the habit has been executed. The function returns the length of the longest streak.
+    """
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
 
@@ -167,6 +233,18 @@ def sql_get_longest_streak(habit_ID):
 
 
 def sql_get_days_since_completion(habit_ID):
+    """
+    Retrieves the number of full days that have passed since the latest execution of a given habit.
+    If there are no executions for the habit, the function returns None.
+
+    Args:
+    habit_ID (int): The ID of the habit for which to retrieve the number of days since last completion.
+
+    Returns:
+    int or None: The number of days since the last execution of the habit, or None if there are no executions for
+    the habit.
+
+    """
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
 
@@ -287,7 +365,12 @@ def sql_delete_habit(habit_name):
     # Creating a cursor
     cursor = conn.cursor()
 
-    # Insert a new execution for habit
+    # Retrieving the habit ID corresponding to the given habit name
+    cursor.execute(f"SELECT ID FROM Habit WHERE HabitName = '{habit_name}'")
+    habit_ID = cursor.fetchone()[0]
+
+    # Deleting habit data in both tables
+    cursor.execute(f'''DELETE FROM HabitExecution WHERE HabitID = "{habit_ID}"''')
     cursor.execute(f'''DELETE FROM Habit WHERE HabitName = "{habit_name}"''')
 
     # Committing changes and closing the connection and cursor
@@ -508,13 +591,11 @@ def check_database():
 
 
 if __name__ == "__main__":
-    # try:
-    #     setup_database()
-    #     delete_random_executions(50)
-    #     update_database()
-    # except sql.OperationalError:  # If database already exists, it shouldn't be created again
-    #     pass
-    # finally:
-    #     check_database()
-    sql_get_habit_list_by_break_count()
-    sql_get_habit_list_by_ID()
+    try:
+        setup_database()
+        delete_random_executions(10)
+        update_database()
+    except sql.OperationalError:  # If database already exists, it shouldn't be created again
+        pass
+    finally:
+        check_database()

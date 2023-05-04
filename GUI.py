@@ -64,7 +64,7 @@ class Menu(tk.Tk):
         self.habit_table.heading("longest_streak", text="Longest streak")
         self.habit_table.heading("number_of_breaks", text="Number of breaks")
 
-        # Pack widgets of main menu
+        # Packing widgets of main menu
         self.label.pack()
         self.button_create_habit.pack()
         self.button_delete_habit.pack()
@@ -300,10 +300,3 @@ class Menu(tk.Tk):
     def update_habit_list_dropdown(self):
         self.dropdown_habit_list.config(values=controller.get_habit_list())
 
-
-if __name__ == "__main__":
-    print(controller.get_habit_list())
-
-"""if __name__ == "__main__":
-    app = Menu()
-    app.mainloop()"""
