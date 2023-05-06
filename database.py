@@ -1,9 +1,8 @@
 import sqlite3 as sql
 import datetime
-import random
-import controller
 
 
+# Database setup
 def setup_database():
     """
     Sets up the Habit Tracker database by creating the Habit and HabitExecution tables
@@ -122,7 +121,7 @@ def delete_random_executions(percentage):
     cursor.close()
     conn.close()
 
-
+# Updating Habit Table
 def sql_get_latest_streak(habit_ID):
     """
     Returns the total number of habit executions and the length of the latest streak for the habit
@@ -340,7 +339,7 @@ def update_database():
     cursor.close()
     conn.close()
 
-
+# Creating/Deleting Habits
 def sql_create_habit(habit_name, periodicity):
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
@@ -378,7 +377,8 @@ def sql_delete_habit(habit_name):
     cursor.close()
     conn.close()
 
-
+# Completion of Habits
+# Returning list of habit names for Completion Menu dropdown list in GUI
 def sql_return_habit_list():
     # Connecting to database
     conn = sql.connect('habit_tracker.db')
@@ -410,11 +410,11 @@ def sql_return_habit(name):
     habit_data = cursor.fetchone()
     ID, name, periodicity, days_since_last_completion, current_streak, longest_streak, number_of_breaks = habit_data
 
-    return ID, name, periodicity, days_since_last_completion, current_streak, longest_streak, number_of_breaks
-
     # Closing the cursor and the connection
     cursor.close()
     conn.close()
+
+    return ID, name, periodicity, days_since_last_completion, current_streak, longest_streak, number_of_breaks
 
 
 def sql_update_habit_data(days_since_last_completion, current_streak, longest_streak, name):
@@ -501,6 +501,42 @@ def sql_get_habit_list_by_ID():
 
     # Retrieving data from the Habit table
     cursor.execute('''SELECT * FROM Habit ORDER BY HabitName''')
+    habit_rows = cursor.fetchall()
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return habit_rows
+
+
+def sql_get_habit_list_daily():
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving data from the Habit table
+    cursor.execute('''SELECT * FROM Habit WHERE Periodicity = 'daily' ORDER BY HabitName''')
+    habit_rows = cursor.fetchall()
+
+    # Closing the cursor and the connection
+    cursor.close()
+    conn.close()
+
+    return habit_rows
+
+
+def sql_get_habit_list_weekly():
+    # Connecting to the database
+    conn = sql.connect("habit_tracker.db")
+
+    # Creating a cursor
+    cursor = conn.cursor()
+
+    # Retrieving data from the Habit table
+    cursor.execute('''SELECT * FROM Habit WHERE Periodicity = 'weekly' ORDER BY HabitName''')
     habit_rows = cursor.fetchall()
 
     # Closing the cursor and the connection

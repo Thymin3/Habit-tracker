@@ -44,6 +44,9 @@ class Menu(tk.Tk):
         # Data analysis menu
         # Buttons
         self.show_habit_table_button = tk.Button(self, text="Show habit table", command=self.show_habit_table)
+        self.show_habits_daily_button = tk.Button(self, text="Show daily habits", command=self.show_habit_table_daily)
+        self.show_habits_weekly_button = tk.Button(self, text="Show weekly habits",
+                                                   command=self.show_habit_table_weekly)
         self.show_habits_with_most_breaks = tk.Button(self, text="Show habits that are hardest to keep up with",
                                                       command=self.show_habits_with_most_breaks)
         self.show_habits_with_longest_current_streak = tk.Button(self, text="Show habits with currently longest streak",
@@ -114,6 +117,8 @@ class Menu(tk.Tk):
         # Pack widgets
         self.label.pack()
         self.show_habit_table_button.pack()
+        self.show_habits_daily_button.pack()
+        self.show_habits_weekly_button.pack()
         self.show_habits_with_most_breaks.pack()
         self.show_habits_with_longest_current_streak.pack()
         self.show_habit_with_longest_streak_overall.pack()
@@ -214,7 +219,6 @@ class Menu(tk.Tk):
         self.label.pack()
 
     # Data analysis menu methods
-
     def show_habit_table(self):
         # Removing all widgets
         self.remove_all_widgets()
@@ -224,6 +228,38 @@ class Menu(tk.Tk):
 
         # Adding data to the habit table
         for i, row in enumerate(controller.give_habit_list_by_ID()):
+            self.habit_table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
+
+        # Packing the table + back buttons
+        self.habit_table.pack()
+        self.back_to_analyze_menu_button.pack()
+        self.button_back.pack()
+
+    def show_habit_table_daily(self):
+        # Removing all widgets
+        self.remove_all_widgets()
+
+        # Deleting all potentially existing rows from habit table
+        self.habit_table.delete(*self.habit_table.get_children())
+
+        # Adding data to the habit table
+        for i, row in enumerate(controller.give_habit_list_daily()):
+            self.habit_table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
+
+        # Packing the table + back buttons
+        self.habit_table.pack()
+        self.back_to_analyze_menu_button.pack()
+        self.button_back.pack()
+
+    def show_habit_table_weekly(self):
+        # Removing all widgets
+        self.remove_all_widgets()
+
+        # Deleting all potentially existing rows from habit table
+        self.habit_table.delete(*self.habit_table.get_children())
+
+        # Adding data to the habit table
+        for i, row in enumerate(controller.give_habit_list_weekly()):
             self.habit_table.insert(parent='', index='end', iid=i, text=str(i + 1), values=row[1:])
 
         # Packing the table + back buttons
@@ -299,4 +335,3 @@ class Menu(tk.Tk):
 
     def update_habit_list_dropdown(self):
         self.dropdown_habit_list.config(values=controller.get_habit_list())
-

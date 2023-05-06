@@ -1,9 +1,10 @@
-import main
+import habit
 import GUI
 import database
+import sqlite3 as sql
 
 
-# Functions passed to main
+# Accessing habit.py to create habits
 
 def create_daily_habit(name, periodicity="daily"):
     """
@@ -16,7 +17,7 @@ def create_daily_habit(name, periodicity="daily"):
     """
 
     # Passing user input to main logic
-    new_habit_name, new_habit_periodicity = main.Habit.create_habit(name, periodicity)
+    new_habit_name, new_habit_periodicity = habit.Habit.create_habit(name, periodicity)
 
     # Checking habit names in database for duplicates
     current_habit_names = get_habit_list()
@@ -41,7 +42,7 @@ def create_weekly_habit(name, periodicity="weekly"):
         A new habit will be generated in the habit_tracker.db database in case it does not exist yet."""
 
     # Passing user input to main logic
-    new_habit_name, new_habit_periodicity = main.Habit.create_habit(name, periodicity)
+    new_habit_name, new_habit_periodicity = habit.Habit.create_habit(name, periodicity)
 
     # Checking habit names in database for duplicates
     current_habit_names = get_habit_list()
@@ -57,12 +58,7 @@ def create_weekly_habit(name, periodicity="weekly"):
         return False  # GUI will notify user of successfully created habit
 
 
-def get_habit_list():
-    """Receiving habit_names list from database and returning it for the GUI"""
-    habit_names = database.sql_return_habit_list()
-    # Passing Habit IDs and habit names
-    return habit_names
-
+# From GUI to database
 
 def complete_habit(name):
     # Retrieving data from database
@@ -84,23 +80,21 @@ def complete_habit(name):
         return False
 
 
-def pass_streak_data():
-    # NECESSARY?
-    # Retrieving data from database
-    total_execution_count, latest_streak = database.sql_get_latest_streak()
-    longest_streak = database.sql_get_longest_streak()
-
-
-# Functions passed to database
-
-
 def delete_habit(name):
     # Deleting habit data from database
     database.sql_delete_habit(name)
 
 
-# Functions passed to GUI
+# From Database to GUI
 
+# Habit completion
+def get_habit_list():
+    """Receiving habit_names list from database and returning it for the GUI"""
+    habit_names = database.sql_return_habit_list()
+    # Passing Habit IDs and habit names
+    return habit_names
+
+# Data Analysis
 def give_habit_list_by_ID():
     # Updating streak and break data in database
     database.update_database()
@@ -108,6 +102,23 @@ def give_habit_list_by_ID():
     return database.sql_get_habit_list_by_ID()
 
 
+# Data Analysis
+def give_habit_list_daily():
+    # Updating streak and break data in database
+    database.update_database()
+
+    return database.sql_get_habit_list_daily()
+
+
+# Data Analysis
+def give_habit_list_weekly():
+    # Updating streak and break data in database
+    database.update_database()
+
+    return database.sql_get_habit_list_weekly()
+
+
+# Data Analysis
 def give_habit_list_by_break_count():
     # Updating streak and break data in database
     database.update_database()
@@ -115,6 +126,7 @@ def give_habit_list_by_break_count():
     return database.sql_get_habit_list_by_break_count()
 
 
+# Data Analysis
 def give_habit_list_by_current_streak():
     # Updating streak and break data in database
     database.update_database()
@@ -122,6 +134,7 @@ def give_habit_list_by_current_streak():
     return database.sql_get_habit_list_by_current_streak()
 
 
+# Data Analysis
 def give_habit_list_by_longest_streak():
     # Updating streak and break data in database
     database.update_database()
@@ -134,5 +147,15 @@ def run_GUI():
     app.mainloop()
 
 
+def create_database():
+    try:
+        database.setup_database()
+        database.delete_random_executions(10)
+        database.update_database()
+    except sql.OperationalError:  # If database already exists, it shouldn't be created again
+        pass
+
+
 if __name__ == '__main__':
+    create_database()
     run_GUI()
