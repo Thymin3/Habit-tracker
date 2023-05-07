@@ -147,15 +147,15 @@ def run_GUI():
     app.mainloop()
 
 
-def create_database():
+def create_database(percentage):
     try:
         database.setup_database()
-        database.delete_random_executions(10)
+        database.delete_random_executions(percentage)
         database.update_database()
     except sql.OperationalError:  # If database already exists, it shouldn't be created again
         pass
 
 
 if __name__ == '__main__':
-    create_database()
+    create_database(10)
     run_GUI()

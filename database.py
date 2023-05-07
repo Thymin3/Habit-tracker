@@ -17,11 +17,8 @@ def setup_database():
     This function also populates the Habit table with example data for five habits and the HabitExecution table
     with execution data for the last 4 months.
 
-    Args:
-    None
-
     Returns:
-    None
+        None
     """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
@@ -79,13 +76,10 @@ def delete_random_executions(percentage):
     the data more believable.
 
     Args:
-    - percentage (float): The percentage of total habit execution records to delete. Must be a float between 0 and 100.
+        percentage (float): The percentage of total habit execution records to delete. Must be a float between 0 and 100.
 
     Returns:
-    - None
-
-    Raises:
-    - ValueError: If percentage is not a float between 0 and 100.
+        None
 
     This function connects to the "habit_tracker.db" database, selects a random subset of habit execution records from
     the "HabitExecution" table based on the given percentage, and deletes them from the table.
@@ -242,7 +236,6 @@ def sql_get_days_since_completion(habit_ID):
     Returns:
     int or None: The number of days since the last execution of the habit, or None if there are no executions for
     the habit.
-
     """
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
@@ -270,6 +263,15 @@ def sql_get_days_since_completion(habit_ID):
 
 
 def sql_get_number_of_breaks(habit_ID):
+    """
+    Retrieves the number of breaks in the habit execution history, based on its periodicity and the execution dates.
+
+    Args:
+       habit_ID (int): The ID of the habit to retrieve the number of breaks for.
+
+    Returns:
+       int: The number of breaks in the habit execution history.
+    """
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
 
@@ -313,6 +315,14 @@ def sql_get_number_of_breaks(habit_ID):
 
 
 def update_database():
+    """
+       Updates the statistics of all habits in the habit table of the habit tracker database,
+       including their current streak, longest streak,
+       number of breaks, and days since last completion.
+
+       Returns:
+           None
+       """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -339,8 +349,19 @@ def update_database():
     cursor.close()
     conn.close()
 
+
 # Creating/Deleting Habits
 def sql_create_habit(habit_name, periodicity):
+    """
+    Inserts a new habit with the specified habit name and periodicity into the habit tracker database.
+
+    Args:
+        habit_name (str): The name of the new habit.
+        periodicity (str): The periodicity of the new habit, which can be either "daily" or "weekly".
+
+    Returns:
+        None
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -358,6 +379,15 @@ def sql_create_habit(habit_name, periodicity):
 
 
 def sql_delete_habit(habit_name):
+    """
+    Deletes the habit and its corresponding execution data from the database.
+
+    Args:
+        habit_name (str): The name of the habit to be deleted.
+
+    Returns:
+        None
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -377,9 +407,16 @@ def sql_delete_habit(habit_name):
     cursor.close()
     conn.close()
 
+
 # Completion of Habits
 # Returning list of habit names for Completion Menu dropdown list in GUI
 def sql_return_habit_list():
+    """
+    Retrieves a list of habit names from the habit table in the habit_tracker.db database.
+
+    Returns:
+        habit_names (list): A list of names of all the habits currently tracked in the database.
+    """
     # Connecting to database
     conn = sql.connect('habit_tracker.db')
 
@@ -399,6 +436,22 @@ def sql_return_habit_list():
 
 
 def sql_return_habit(name):
+    """
+    Retrieves the data for a habit with the given name from the Habit table in the habit tracker database.
+
+    Args:
+       name (str): The name of the habit to retrieve.
+
+    Returns:
+       A tuple containing the following elements:
+         - ID (int): The ID of the habit.
+        - name (str): The name of the habit.
+        - periodicity (str): The periodicity of the habit ("daily" or "weekly").
+        - days_since_last_completion (int): The number of days since the last time the habit was completed.
+        - current_streak (int): The current streak of completing the habit.
+        - longest_streak (int): The longest streak of completing the habit.
+        - number_of_breaks (int): The number of breaks in completing the habit.
+    """
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
 
@@ -418,6 +471,18 @@ def sql_return_habit(name):
 
 
 def sql_update_habit_data(days_since_last_completion, current_streak, longest_streak, name):
+    """
+    Updates the data of a habit in the habit table of the habit tracker database.
+
+    Args:
+        days_since_last_completion (int): The number of days since the last time the habit was completed.
+        current_streak (int): The current streak of completing the habit.
+        longest_streak (int): The longest streak of completing the habit.
+        name (str): The name of the habit to update.
+
+    Returns:
+        None
+    """
     # Connecting to database
     conn = sql.connect("habit_tracker.db")
 
@@ -435,6 +500,15 @@ def sql_update_habit_data(days_since_last_completion, current_streak, longest_st
 
 
 def sql_update_habit_execution_data(habit_name):
+    """
+    Inserts a new execution with the current time for a habit in the HabitExecution table of the habit tracker database.
+
+    Args:
+        habit_name (str): The name of the habit to update.
+
+    Returns:
+        None
+    """
     # Storing current datetime in a variable
     current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -458,6 +532,15 @@ def sql_update_habit_execution_data(habit_name):
 
 
 def sql_check_if_habit_already_completed(habit_name):
+    """
+    Checks if a habit with the given name has already been completed today.
+
+    Args:
+        habit_name (str): The name of the habit to check.
+
+    Returns:
+        bool: True if the habit has not been completed today, False otherwise.
+    """
     # Storing current datetime in a variable
     current_datetime = datetime.datetime.now()
 
@@ -493,6 +576,19 @@ def sql_check_if_habit_already_completed(habit_name):
 
 # Functions used in data analysis menu
 def sql_get_habit_list_by_ID():
+    """
+    Retrieves a list of habit data from the Habit table in the habit tracker database, sorted by HabitName.
+
+    Returns:
+            List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+                - ID (int): The unique ID of the habit.
+                - HabitName (str): The name of the habit.
+                - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+                - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+                - CurrentStreak (int): The current streak of days on which the habit has been completed.
+                - LongestStreak (int): The longest streak of days on which the habit has been completed.
+                - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -511,6 +607,19 @@ def sql_get_habit_list_by_ID():
 
 
 def sql_get_habit_list_daily():
+    """
+    Retrieves a list of habits with a periodicity of 'daily' from the Habit table in the habit_tracker.db database.
+
+    Returns:
+        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+            - ID (int): The unique ID of the habit.
+            - HabitName (str): The name of the habit.
+            - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+            - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+            - CurrentStreak (int): The current streak of days on which the habit has been completed.
+            - LongestStreak (int): The longest streak of days on which the habit has been completed.
+            - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -529,6 +638,19 @@ def sql_get_habit_list_daily():
 
 
 def sql_get_habit_list_weekly():
+    """
+    Retrieves a list of habits with a periodicity of 'weekly' from the Habit table in the habit_tracker.db database.
+
+    Returns:
+       List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+           - ID (int): The unique ID of the habit.
+           - HabitName (str): The name of the habit.
+           - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+           - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+           - CurrentStreak (int): The current streak of days on which the habit has been completed.
+           - LongestStreak (int): The longest streak of days on which the habit has been completed.
+           - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -547,6 +669,19 @@ def sql_get_habit_list_weekly():
 
 
 def sql_get_habit_list_by_break_count():
+    """
+    Retrieves a list of habits sorted by the number of breaks in descending order.
+
+    Returns:
+       List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+           - ID (int): The unique ID of the habit.
+           - HabitName (str): The name of the habit.
+           - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+           - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+           - CurrentStreak (int): The current streak of days on which the habit has been completed.
+           - LongestStreak (int): The longest streak of days on which the habit has been completed.
+           - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -565,6 +700,19 @@ def sql_get_habit_list_by_break_count():
 
 
 def sql_get_habit_list_by_current_streak():
+    """
+    Retrieves a list of habits sorted by the length of the current streak in descending order.
+
+    Returns:
+       List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+           - ID (int): The unique ID of the habit.
+           - HabitName (str): The name of the habit.
+           - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+           - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+           - CurrentStreak (int): The current streak of days on which the habit has been completed.
+           - LongestStreak (int): The longest streak of days on which the habit has been completed.
+           - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -583,6 +731,19 @@ def sql_get_habit_list_by_current_streak():
 
 
 def sql_get_habit_list_by_longest_streak():
+    """
+    Retrieves a list of habits sorted by the length of the longest streak in descending order.
+
+    Returns:
+       List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+           - ID (int): The unique ID of the habit.
+           - HabitName (str): The name of the habit.
+           - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+           - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+           - CurrentStreak (int): The current streak of days on which the habit has been completed.
+           - LongestStreak (int): The longest streak of days on which the habit has been completed.
+           - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -600,7 +761,7 @@ def sql_get_habit_list_by_longest_streak():
     return habit_rows
 
 
-def check_database():
+def check_database():    # only for testing purposes
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 

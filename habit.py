@@ -1,5 +1,3 @@
-import controller
-
 
 class Habit:
     def __init__(self, name, periodicity, days_since_last_completion=0, current_streak=0,
@@ -13,5 +11,15 @@ class Habit:
 
     @classmethod    # Used to avoid that controller is calling the class itself without an instance having been created
     def create_habit(cls, name, periodicity):
+        """
+        Class method that creates a new habit instance and returns a tuple containing the habit's name and periodicity.
+
+        Args:
+            name (str): The name of the habit.
+            periodicity (int): The number of days that should elapse between completions of the habit.
+
+        Returns:
+            tuple: A tuple containing the habit's name and periodicity.
+        """
         habit = cls(name, periodicity)  # Creating a new habit instance
         return habit.name, habit.periodicity
