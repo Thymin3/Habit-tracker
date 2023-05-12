@@ -583,7 +583,7 @@ def sql_get_habit_list_by_ID():
             List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
                 - ID (int): The unique ID of the habit.
                 - HabitName (str): The name of the habit.
-                - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+                - Periodicity (str): The periodicity of the habit.
                 - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
                 - CurrentStreak (int): The current streak of days on which the habit has been completed.
                 - LongestStreak (int): The longest streak of days on which the habit has been completed.
@@ -614,7 +614,7 @@ def sql_get_habit_list_daily():
         List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
             - ID (int): The unique ID of the habit.
             - HabitName (str): The name of the habit.
-            - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+            - Periodicity (str): The periodicity of the habit.
             - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
             - CurrentStreak (int): The current streak of days on which the habit has been completed.
             - LongestStreak (int): The longest streak of days on which the habit has been completed.
@@ -645,7 +645,7 @@ def sql_get_habit_list_weekly():
        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
            - ID (int): The unique ID of the habit.
            - HabitName (str): The name of the habit.
-           - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+           - Periodicity (str): The periodicity of the habit.
            - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
            - CurrentStreak (int): The current streak of days on which the habit has been completed.
            - LongestStreak (int): The longest streak of days on which the habit has been completed.
@@ -676,7 +676,7 @@ def sql_get_habit_list_by_break_count():
        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
            - ID (int): The unique ID of the habit.
            - HabitName (str): The name of the habit.
-           - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+           - Periodicity (str): The periodicity of the habit.
            - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
            - CurrentStreak (int): The current streak of days on which the habit has been completed.
            - LongestStreak (int): The longest streak of days on which the habit has been completed.
@@ -707,7 +707,7 @@ def sql_get_habit_list_by_current_streak():
        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
            - ID (int): The unique ID of the habit.
            - HabitName (str): The name of the habit.
-           - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+           - Periodicity (str): The periodicity of the habit.
            - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
            - CurrentStreak (int): The current streak of days on which the habit has been completed.
            - LongestStreak (int): The longest streak of days on which the habit has been completed.
@@ -738,7 +738,7 @@ def sql_get_habit_list_by_longest_streak():
        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
            - ID (int): The unique ID of the habit.
            - HabitName (str): The name of the habit.
-           - Periodicity (str): The periodicity of the habit, which should be 'daily'.
+           - Periodicity (str): The periodicity of the habit.
            - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
            - CurrentStreak (int): The current streak of days on which the habit has been completed.
            - LongestStreak (int): The longest streak of days on which the habit has been completed.

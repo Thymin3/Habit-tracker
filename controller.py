@@ -14,6 +14,13 @@ def create_daily_habit(name, periodicity="daily"):
     Since the command was performed by the user over the daily button, the periodicity is set to daily by default.
     The habit name is defined by the user in the entry widget.
     A new habit will be generated in the habit_tracker.db database in case it does not exist yet.
+
+    Args:
+        name (str): The name of the habit to be created.
+        periodicity (str, optional): The periodicity of the habit, defaults to "daily".
+
+    Returns:
+        bool: True if the habit already exists in the database, False otherwise.
     """
 
     # Passing user input to main logic
@@ -34,12 +41,21 @@ def create_daily_habit(name, periodicity="daily"):
 
 
 def create_weekly_habit(name, periodicity="weekly"):
-    """Used for receiving a call from the GUI to create a habit + checking for duplicates in database +
-     generating a new habit in the database in case no duplicates exist.
+    """
+    Used for receiving a call from the GUI to create a habit + checking for duplicates in database +
+    generating a new habit in the database in case no duplicates exist.
 
-        Since the command was performed by the user over the weekly button, the periodicity is set to weekly by default.
-        The habit name is defined by the user in the entry widget.
-        A new habit will be generated in the habit_tracker.db database in case it does not exist yet."""
+    Since the command was performed by the user over the weekly button, the periodicity is set to weekly by default.
+    The habit name is defined by the user in the entry widget.
+    A new habit will be generated in the habit_tracker.db database in case it does not exist yet.
+
+    Args:
+        name (str): The name of the habit to be created.
+        periodicity (str, optional): The periodicity of the habit, defaults to "daily".
+
+    Returns:
+        bool: True if the habit already exists in the database, False otherwise.
+    """
 
     # Passing user input to main logic
     new_habit_name, new_habit_periodicity = habit.Habit.create_habit(name, periodicity)
@@ -61,6 +77,22 @@ def create_weekly_habit(name, periodicity="weekly"):
 # From GUI to database
 
 def complete_habit(name):
+    """
+    Marks the habit with the given name as completed for today and updates its data in the habit tracker database.
+
+    This function is called when the user completes a habit for the day. It retrieves the habit's data from the
+    database, checks whether it has already been completed today, and updates the habit's data in the database
+    accordingly. If the habit has not already been completed today, the function updates its data in the database and
+    returns True. If the habit has already been completed today, the function does not update its data and returns
+    False. Returning False prompts the GUI to inform the User that the habit cannot be completed a second time
+    on the same day.
+
+    Args:
+        name (str): The name of the habit to be marked as completed.
+
+    Returns:
+        bool: True if the habit was successfully marked as completed, False if it had already been completed today.
+    """
     # Retrieving data from database
     ID, name, periodicity, days_since_last_completion, current_streak, \
     longest_streak, number_of_breaks = database.sql_return_habit(name)
@@ -81,7 +113,17 @@ def complete_habit(name):
 
 
 def delete_habit(name):
-    # Deleting habit data from database
+    """
+    This function is called when the user wants to delete a habit from the habit tracker.
+    It deletes the habit's data from the database, so that the habit will no longer appear
+    in the habit tracker's list of habits.
+
+    Args:
+        name (str): The name of the habit to be deleted.
+
+    Returns:
+        None
+    """
     database.sql_delete_habit(name)
 
 
@@ -89,13 +131,34 @@ def delete_habit(name):
 
 # Habit completion
 def get_habit_list():
-    """Receiving habit_names list from database and returning it for the GUI"""
+    """
+    This function is called when the habit tracker GUI needs to display the dropdown-list of all habits.
+    It retrieves the list of all habit names from the database and returns it as a list of strings.
+
+    Returns:
+        habit_names (list): A list of all habit names in the habit tracker database.
+    """
     habit_names = database.sql_return_habit_list()
     # Passing Habit IDs and habit names
     return habit_names
 
 # Data Analysis
 def give_habit_list_by_ID():
+    """
+    Calls the function "sql_get_habit_list_by_ID" from the database module which in turn retrieves a list of
+    habit data from the Habit table in the habit tracker database, sorted by HabitName.
+    Prior to that the data in the database is updated.
+
+    Returns:
+        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+                - ID (int): The unique ID of the habit.
+                - HabitName (str): The name of the habit.
+                - Periodicity (str): The periodicity of the habit.
+                - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+                - CurrentStreak (int): The current streak of days on which the habit has been completed.
+                - LongestStreak (int): The longest streak of days on which the habit has been completed.
+                - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Updating streak and break data in database
     database.update_database()
 
@@ -104,6 +167,22 @@ def give_habit_list_by_ID():
 
 # Data Analysis
 def give_habit_list_daily():
+    """
+    Calls the function "sql_get_habit_list_daily" from the database module which in turn retrieves a list of
+    habit data from the Habit table in the habit tracker database. It hereby only retrieves habits with
+    the periodicity "daily".
+    Prior to that the data in the database is updated.
+
+    Returns:
+        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+                - ID (int): The unique ID of the habit.
+                - HabitName (str): The name of the habit.
+                - Periodicity (str): The periodicity of the habit.
+                - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+                - CurrentStreak (int): The current streak of days on which the habit has been completed.
+                - LongestStreak (int): The longest streak of days on which the habit has been completed.
+                - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Updating streak and break data in database
     database.update_database()
 
@@ -112,6 +191,22 @@ def give_habit_list_daily():
 
 # Data Analysis
 def give_habit_list_weekly():
+    """
+    Calls the function "sql_get_habit_list_weekly" from the database module which in turn retrieves a list of
+    habit data from the Habit table in the habit tracker database. It hereby only retrieves habits with
+    the periodicity "weekly".
+    Prior to that the data in the database is updated.
+
+    Returns:
+        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+                - ID (int): The unique ID of the habit.
+                - HabitName (str): The name of the habit.
+                - Periodicity (str): The periodicity of the habit.
+                - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+                - CurrentStreak (int): The current streak of days on which the habit has been completed.
+                - LongestStreak (int): The longest streak of days on which the habit has been completed.
+                - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Updating streak and break data in database
     database.update_database()
 
@@ -120,6 +215,21 @@ def give_habit_list_weekly():
 
 # Data Analysis
 def give_habit_list_by_break_count():
+    """
+    Calls the function "sql_get_habit_list_by_break_count" from the database module which in turn retrieves a list of
+    habit data from the Habit table in the habit tracker database, sorted by the number of breaks in descending order.
+    Prior to that the data in the database is updated.
+
+    Returns:
+        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+                - ID (int): The unique ID of the habit.
+                - HabitName (str): The name of the habit.
+                - Periodicity (str): The periodicity of the habit.
+                - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+                - CurrentStreak (int): The current streak of days on which the habit has been completed.
+                - LongestStreak (int): The longest streak of days on which the habit has been completed.
+                - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Updating streak and break data in database
     database.update_database()
 
@@ -128,6 +238,21 @@ def give_habit_list_by_break_count():
 
 # Data Analysis
 def give_habit_list_by_current_streak():
+    """
+    Calls the function "sql_get_habit_list_by_current_streak" from the database module which in turn retrieves a list of
+    habit data from the Habit table in the habit tracker database, sorted by the current streak in descending order.
+    Prior to that the data in the database is updated.
+
+    Returns:
+        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+                - ID (int): The unique ID of the habit.
+                - HabitName (str): The name of the habit.
+                - Periodicity (str): The periodicity of the habit.
+                - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+                - CurrentStreak (int): The current streak of days on which the habit has been completed.
+                - LongestStreak (int): The longest streak of days on which the habit has been completed.
+                - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Updating streak and break data in database
     database.update_database()
 
@@ -136,6 +261,21 @@ def give_habit_list_by_current_streak():
 
 # Data Analysis
 def give_habit_list_by_longest_streak():
+    """
+    Calls the function "sql_get_habit_list_by_longest_streak" from the database module which in turn retrieves a list of
+    habit data from the Habit table in the habit tracker database, sorted by the longest streak in descending order.
+    Prior to that the data in the database is updated.
+
+    Returns:
+        List of tuples: Each tuple represents a row from the Habit table, with the data in the following order:
+                - ID (int): The unique ID of the habit.
+                - HabitName (str): The name of the habit.
+                - Periodicity (str): The periodicity of the habit.
+                - DaysSinceLastCompletion (int): The number of days since the habit was last completed.
+                - CurrentStreak (int): The current streak of days on which the habit has been completed.
+                - LongestStreak (int): The longest streak of days on which the habit has been completed.
+                - NumberOfBreaks (int): The number of times the habit has been broken.
+    """
     # Updating streak and break data in database
     database.update_database()
 
