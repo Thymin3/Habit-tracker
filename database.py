@@ -785,14 +785,3 @@ def check_database():    # only for testing purposes
     # Closing the cursor and the connection
     cursor.close()
     conn.close()
-
-
-if __name__ == "__main__":
-    try:
-        setup_database()
-        delete_random_executions(10)
-        update_database()
-    except sql.OperationalError:  # If database already exists, it shouldn't be created again
-        pass
-    finally:
-        check_database()

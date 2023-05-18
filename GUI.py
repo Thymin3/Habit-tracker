@@ -75,8 +75,14 @@ class Menu(tk.Tk):
         self.button_analyze_habits.pack()
         self.button_exit.pack()
 
-    # Main menu methods
+    ### Main menu methods
     def create_click(self):
+        """
+        This method is triggered when the create button is clicked in the GUI.
+        It removes all existing widgets, sets the label to "Creation Menu", and packs the necessary widgets for the
+        Creation menu.
+        It is part of the main menu methods.
+        """
         # Remove widgets and set label to creation menu
         self.remove_all_widgets()
         self.label.configure(text="Creation Menu")
@@ -88,6 +94,12 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def delete_click(self):
+        """
+        This method is triggered when the delete button is clicked in the GUI.
+        It removes all existing widgets, sets the label to "Which habit would you like to delete?",
+        and packs the necessary widgets for the Deletion menu.
+        It is part of the main menu methods.
+        """
         # Remove widgets and adjust label
         self.remove_all_widgets()
         self.label.configure(text="Which habit would you like to delete?")
@@ -99,6 +111,12 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def complete_click(self):
+        """
+        This method is triggered when the complete button is clicked in the GUI.
+        It removes all existing widgets, sets the label to "Which habit did you complete today?",
+        and packs the necessary widgets for the Completion menu.
+        It is part of the main menu methods.
+        """
         # Remove widgets and adjust label
         self.remove_all_widgets()
         self.label.configure(text="Which habit did you complete today?")
@@ -110,6 +128,12 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def analyze_click(self):
+        """
+        This method is triggered when the analyze button is clicked in the GUI.
+        It removes all existing widgets, sets the label to "Data analysis Menu",
+        and packs the necessary widgets for the Data analysis menu.
+        It is part of the main menu methods.
+        """
         # Remove widgets and adjust label
         self.remove_all_widgets()
         self.label.configure(text="Data analysis Menu")
@@ -125,11 +149,24 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def exit_click(self):
+        """
+        This method is triggered when the exit button is clicked in the GUI.
+        It displays a message box asking the user if they want to quit.
+        If the user confirms the request, the application is destroyed and closed.
+
+        Note:
+        - This method is the only one relying on the "messagebox" module from tkinter.
+        """
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.destroy()
 
-    # Creation menu methods
+    ### Creation menu methods
     def daily_click(self):
+        """
+        This method is triggered when the daily button is clicked in the Creation menu.
+        It removes the creation menu buttons, adjusts the label to prompt for a new daily habit name,
+        and packs the necessary widgets for inputting the habit name and creating the daily habit.
+        """
         # Remove creation menu buttons and adjusting label
         self.remove_all_widgets()
         self.label.configure(text="Please type in the name of your new daily habit:")
@@ -141,6 +178,11 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def weekly_click(self):
+        """
+        This method is triggered when the weekly button is clicked in the Creation menu.
+        It removes the creation menu buttons, adjusts the label to prompt for a new daily habit name,
+        and packs the necessary widgets for inputting the habit name and creating the daily habit.
+        """
         # Remove creation menu buttons and adjusting label
         self.remove_all_widgets()
         self.label.configure(text="Please type in the name of your new weekly habit:")
@@ -153,6 +195,19 @@ class Menu(tk.Tk):
 
     # Getting user input for habit name and passing it to controller
     def create_daily_habit(self):
+        """
+        Gets user input for the daily habit name and passes it to the controller.
+
+        This method retrieves the user input from the input field for the daily habit name.
+        It then calls the "create_daily_habit" function from the controller module,
+        passing the new habit name as an argument.
+        If the habit name already exists in the database, it updates the label to display an error message.
+        Otherwise, it removes the input field and create habit button, and updates the label to indicate
+        that the daily habit has been successfully created.
+
+        Additionally, this method updates the habit dropdown menu by creating a new ttk.Combobox widget
+        with the updated habit list from the controller module.
+        """
         new_habit = self.input_field_daily.get()
 
         # Calling the create_habit function in the controller module and checking for unique name in database
@@ -168,6 +223,19 @@ class Menu(tk.Tk):
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
     def create_weekly_habit(self):
+        """
+        Gets user input for the weekly habit name and passes it to the controller.
+
+        This method retrieves the user input from the input field for the weekly habit name.
+        It then calls the "create_daily_habit" function from the controller module,
+        passing the new habit name as an argument.
+        If the habit name already exists in the database, it updates the label to display an error message.
+        Otherwise, it removes the input field and create habit button, and updates the label to indicate
+        that the daily habit has been successfully created.
+
+        Additionally, this method updates the habit dropdown menu by creating a new ttk.Combobox widget
+        with the updated habit list from the controller module.
+        """
         new_habit = self.input_field_weekly.get()
 
         # Calling the create_habit function in the controller module and checking for unique name in database
@@ -182,8 +250,19 @@ class Menu(tk.Tk):
         # Updating habit dropdown menu
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
-    # Deletion menu methods
+    ### Deletion menu methods
     def delete_habit(self):
+        """
+        This method retrieves the selected habit to delete from the habit dropdown menu.
+        It then removes existing widgets, updates the label to indicate the habit has been deleted,
+        and repacks the label and back button.
+
+        Additionally, this method calls the "delete_habit" function in the controller module,
+        passing the habit name to be deleted as an argument.
+
+        Lastly, it updates the habit dropdown menu by creating a new "ttk.Combobox" widget
+        with the updated habit list from the controller module.
+        """
         habit_to_delete = self.dropdown_habit_list.get()
         # Removing widgets and adjusting label
         self.remove_all_widgets()
@@ -197,8 +276,21 @@ class Menu(tk.Tk):
         # Updating habit dropdown menu
         self.dropdown_habit_list = ttk.Combobox(self, values=controller.get_habit_list())
 
-    # Completion menu methods
+    ### Completion menu methods
     def complete_habit(self):
+        """
+        This method retrieves the selected habit to mark as completed from the habit dropdown menu.
+        It then removes existing widgets, updates the label to indicate the habit has been completed,
+        and repacks the label and back button.
+
+        Additionally, this method calls the "complete_habit" function in the controller module,
+        passing the habit name to be marked as completed as an argument.
+
+        If the completion is successful, nothing further is done.
+        If the completion cannot be recorded due to multiple completions in one day for the habit,
+        it triggers the `several_completions_one_day` method to handle the situation.
+        Whether the completion is successful is determined in the complete_habit function in the controller module.
+        """
         habit_to_complete = self.dropdown_habit_list.get()
 
         # Removing widgets, adjusting label and packing back button
@@ -215,11 +307,26 @@ class Menu(tk.Tk):
 
     # Message prompted when habit has already been fulfilled on the same day
     def several_completions_one_day(self):
+        """
+        This method updates the label to display a message indicating that the habit has already been completed
+        within the last 24 hours and advises the user to wait until the next day to complete it again.
+        """
         self.label.configure(text="Habit already completed today. \nPlease wait until tomorrow to complete it again.")
         self.label.pack()
 
-    # Data analysis menu methods
+    ### Data analysis menu methods
     def show_habit_table(self):
+        """
+        Displays a habit table in the data analysis menu.
+
+        This method removes all existing widgets, deletes any potential rows from the habit table,
+        retrieves habit data from the controller module, and populates the habit table accordingly.
+
+        The habit table is populated by iterating over the retrieved habit data and inserting each row
+        into the table with the corresponding values.
+
+        After populating the habit table, the method packs the habit table widget along with the back buttons.
+        """
         # Removing all widgets
         self.remove_all_widgets()
 
@@ -236,6 +343,17 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def show_habit_table_daily(self):
+        """
+        Displays a habit table of habits with periodicity "daily" in the data analysis menu.
+
+        This method removes all existing widgets, deletes any potential rows from the habit table,
+        retrieves habit data from the controller module, and populates the habit table accordingly.
+
+        The habit table is populated by iterating over the retrieved habit data and inserting each row
+        into the table with the corresponding values.
+
+        After populating the habit table, the method packs the habit table widget along with the back buttons.
+        """
         # Removing all widgets
         self.remove_all_widgets()
 
@@ -252,6 +370,17 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def show_habit_table_weekly(self):
+        """
+        Displays a habit table of habits with periodicity "weekly" in the data analysis menu.
+
+        This method removes all existing widgets, deletes any potential rows from the habit table,
+        retrieves habit data from the controller module, and populates the habit table accordingly.
+
+        The habit table is populated by iterating over the retrieved habit data and inserting each row
+        into the table with the corresponding values.
+
+        After populating the habit table, the method packs the habit table widget along with the back buttons.
+        """
         # Removing all widgets
         self.remove_all_widgets()
 
@@ -268,6 +397,17 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def show_habits_with_most_breaks(self):
+        """
+        Displays a habit table of all habits, sorted by break count in the data analysis menu in descending order.
+
+        This method removes all existing widgets, deletes any potential rows from the habit table,
+        retrieves habit data from the controller module, and populates the habit table accordingly.
+
+        The habit table is populated by iterating over the retrieved habit data and inserting each row
+        into the table with the corresponding values.
+
+        After populating the habit table, the method packs the habit table widget along with the back buttons.
+        """
         # Removing all widgets
         self.remove_all_widgets()
 
@@ -284,6 +424,18 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def show_habits_with_longest_current_streak(self):
+        """
+        Displays a habit table of all habits, sorted by current streak count in the data analysis menu in
+        descending order.
+
+        This method removes all existing widgets, deletes any potential rows from the habit table,
+        retrieves habit data from the controller module, and populates the habit table accordingly.
+
+        The habit table is populated by iterating over the retrieved habit data and inserting each row
+        into the table with the corresponding values.
+
+        After populating the habit table, the method packs the habit table widget along with the back buttons.
+        """
         # Removing all widgets
         self.remove_all_widgets()
 
@@ -300,6 +452,18 @@ class Menu(tk.Tk):
         self.button_back.pack()
 
     def show_habits_with_longest_longest_streak(self):
+        """
+        Displays a habit table of all habits, sorted by the longest overall streak count in the data analysis menu in
+        descending order.
+
+        This method removes all existing widgets, deletes any potential rows from the habit table,
+        retrieves habit data from the controller module, and populates the habit table accordingly.
+
+        The habit table is populated by iterating over the retrieved habit data and inserting each row
+        into the table with the corresponding values.
+
+        After populating the habit table, the method packs the habit table widget along with the back buttons.
+        """
         # Removing all widgets
         self.remove_all_widgets()
 
@@ -315,8 +479,14 @@ class Menu(tk.Tk):
         self.back_to_analyze_menu_button.pack()
         self.button_back.pack()
 
-    # General methods
+    ### General methods
     def back_click(self):
+        """
+        Performs actions to navigate back to the start menu.
+
+        This method removes all existing widgets, updates the label to "Start Menu" with a specified font,
+        and repacks the start menu widgets.
+        """
         # Remove widgets and setting label to start menu
         self.remove_all_widgets()
         self.label.configure(text="Start Menu", font=30)
@@ -330,8 +500,15 @@ class Menu(tk.Tk):
         self.button_exit.pack()
 
     def remove_all_widgets(self):
+        """
+        This method unpacks all existing widgets currently displayed.
+        """
         for widget in self.winfo_children():
             widget.pack_forget()
 
     def update_habit_list_dropdown(self):
+        """
+        This method updates the dropdown habit list by requesting the list of currently existing habits stored in
+        the database. It therefore accesses the function "get_habit_list" in the controller module.
+        """
         self.dropdown_habit_list.config(values=controller.get_habit_list())

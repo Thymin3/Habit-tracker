@@ -4,7 +4,7 @@ import database
 import sqlite3 as sql
 
 
-# Accessing habit.py to create habits
+### Accessing habit.py to create habits
 
 def create_daily_habit(name, periodicity="daily"):
     """
@@ -23,7 +23,7 @@ def create_daily_habit(name, periodicity="daily"):
         bool: True if the habit already exists in the database, False otherwise.
     """
 
-    # Passing user input to main logic
+    # Creating a habit instance
     new_habit_name, new_habit_periodicity = habit.Habit.create_habit(name, periodicity)
 
     # Checking habit names in database for duplicates
@@ -57,7 +57,7 @@ def create_weekly_habit(name, periodicity="weekly"):
         bool: True if the habit already exists in the database, False otherwise.
     """
 
-    # Passing user input to main logic
+    # Creating a habit instance
     new_habit_name, new_habit_periodicity = habit.Habit.create_habit(name, periodicity)
 
     # Checking habit names in database for duplicates
@@ -74,7 +74,7 @@ def create_weekly_habit(name, periodicity="weekly"):
         return False  # GUI will notify user of successfully created habit
 
 
-# From GUI to database
+### From GUI to database
 
 def complete_habit(name):
     """
@@ -127,7 +127,7 @@ def delete_habit(name):
     database.sql_delete_habit(name)
 
 
-# From Database to GUI
+### From Database to GUI
 
 # Habit completion
 def get_habit_list():
@@ -141,6 +141,7 @@ def get_habit_list():
     habit_names = database.sql_return_habit_list()
     # Passing Habit IDs and habit names
     return habit_names
+
 
 # Data Analysis
 def give_habit_list_by_ID():
@@ -283,11 +284,33 @@ def give_habit_list_by_longest_streak():
 
 
 def run_GUI():
+    """
+    Runs the GUI application.
+
+    This function creates an instance of the GUI.Menu class and starts the main event loop
+    to display and handle user interactions with the graphical user interface.
+    """
     app = GUI.Menu()
     app.mainloop()
 
 
 def create_database(percentage):
+    """
+    Creates the initial habit_tracker.db database.
+
+    This function sets up a database using the "setup_database" function.
+    It then deletes a percentage of random executions from the database using the "delete_random_executions" function.
+    Finally, it updates the database by calling the "update_database" function.
+    All the functions listed are parts of the database.py module.
+
+    Note:
+    - The "percentage" parameter specifies the percentage of random executions to delete from the database.
+    - If the database already exists, the "OperationalError" exception from the "sql" module is caught
+      and the function does nothing.
+
+    Args:
+    - percentage (int): The percentage of random executions to delete from the HabitExecution table in the database.
+    """
     try:
         database.setup_database()
         database.delete_random_executions(percentage)

@@ -16,7 +16,7 @@ class Habit:
 
         Args:
             name (str): The name of the habit.
-            periodicity (int): The number of days that should elapse between completions of the habit.
+            periodicity (str): The periodicity of the created habit: Daily/Weekly
 
         Returns:
             tuple: A tuple containing the habit's name and periodicity.
