@@ -316,7 +316,7 @@ def sql_get_number_of_breaks(habit_ID):
 
 def update_database():
     """
-       Updates the statistics of all habits in the habit table of the habit tracker database,
+       Updates the statistics of all habits in the Habit table of the habit tracker database,
        including their current streak, longest streak,
        number of breaks, and days since last completion.
 
@@ -412,7 +412,7 @@ def sql_delete_habit(habit_name):
 # Returning list of habit names for Completion Menu dropdown list in GUI
 def sql_return_habit_list():
     """
-    Retrieves a list of habit names from the habit table in the habit_tracker.db database.
+    Retrieves a list of habit names from the Habit table in the habit_tracker.db database.
 
     Returns:
         habit_names (list): A list of names of all the habits currently tracked in the database.
@@ -472,7 +472,7 @@ def sql_return_habit(name):
 
 def sql_update_habit_data(days_since_last_completion, current_streak, longest_streak, name):
     """
-    Updates the data of a habit in the habit table of the habit tracker database.
+    Updates the data of a habit in the Habit table of the habit tracker database.
 
     Args:
         days_since_last_completion (int): The number of days since the last time the habit was completed.
