@@ -29,7 +29,14 @@ def check_database():
 
     return habit_rows, execution_rows
 
+# Checking 4 month example data for correct streak calculation
+def create_habit_lists():
+    habit_rows, execution_rows = check_database()
+    one, two, three, four, five = habit_rows
+
+    
 
 if __name__ == "__main__":
-    check_database()
+    create_habit_lists()
+
 
