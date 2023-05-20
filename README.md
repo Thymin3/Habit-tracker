@@ -1,5 +1,18 @@
 # Habit-tracker
 
+## General Info
+
+This Habit Tracker is part of a project for the module OOFPP (Object Oriented and Functional Programming with Python) at IU Internationale Hochschule.
+It is a simple application designed to help with tracking and managing daily and weekly habits. 
+Running the application for the first time will trigger the creation of the habit tracker database, which will be populated with examplary habit data for 5 different habits for the last 4 months.
+
+**Features:**
+- Creating and Deleting habits
+- Marking Habits complete for the day*
+- Analyzing habit data (e.g. showing a table with the habits ordered by longest streak)
+
+*Note, that habits can only be completed once a day, irrelevant if daily or weekly habits. Further completions on the same day will neither advance streaks, nor be saved in the database.
+
 ## Getting Started
 
 **Git and Python 3 distribution (e.g. Python 3.11.3) required**  
