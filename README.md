@@ -1,4 +1,4 @@
-# Habit-tracker -WORK IN PROGRESS, DO NOT EXECUTE-
+# Habit-tracker
 
 # Getting Started
 
@@ -10,17 +10,15 @@ Navigate to the project directory:
 
 cd Habit-tracker
 
-Create a new virtual environment:
+Create a new virtual environment (optional):
 
 python -m venv env
 
-Activate the virtual environment:
+Activate the virtual environment (optional):
 
 source env/bin/activate   On macOS or Linux
 env\Scripts\activate.bat  On Windows
 
-Install the necessary modules:
-
-pip install -r requirements.txt
-
 Start the application:
+
+python controller.py
