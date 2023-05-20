@@ -4,7 +4,7 @@ import database
 import sqlite3 as sql
 
 
-### Accessing habit.py to create habits
+### Accessing habit module to create habits
 
 def create_daily_habit(name, periodicity="daily"):
     """

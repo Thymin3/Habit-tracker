@@ -76,7 +76,8 @@ def delete_random_executions(percentage):
     the data more believable.
 
     Args:
-        percentage (float): The percentage of total habit execution records to delete. Must be a float between 0 and 100.
+        percentage (float): The percentage of total habit execution records to delete.
+        Must be a float between 0 and 100.
 
     Returns:
         None
@@ -114,6 +115,7 @@ def delete_random_executions(percentage):
     conn.commit()
     cursor.close()
     conn.close()
+
 
 # Updating Habit Table
 def sql_get_latest_streak(habit_ID):
@@ -760,28 +762,3 @@ def sql_get_habit_list_by_longest_streak():
 
     return habit_rows
 
-
-def check_database():    # only for testing purposes
-    # Connecting to the database
-    conn = sql.connect("habit_tracker.db")
-
-    # Creating a cursor
-    cursor = conn.cursor()
-
-    # Retrieving data from the Habit table
-    cursor.execute('''SELECT * FROM Habit''')
-    habit_rows = cursor.fetchall()
-    print("Habit table:")
-    for row in habit_rows:
-        print(row)
-
-    # Retrieving data from the HabitExecution table
-    cursor.execute('''SELECT * FROM HabitExecution''')
-    execution_rows = cursor.fetchall()
-    print("\nHabitExecution table:")
-    for row in execution_rows:
-        print(row)
-
-    # Closing the cursor and the connection
-    cursor.close()
-    conn.close()
