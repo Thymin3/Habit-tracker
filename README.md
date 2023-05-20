@@ -1,24 +1,33 @@
 # Habit-tracker
 
-# Getting Started
+## Getting Started
 
-Clone this repository:
+**Git and Python 3 distribution (e.g. Python 3.11.3) required**  
+
+Insert following commands into the command-line:
+
+<ins>Clone this repository:</ins>
 
 git clone https://github.com/Thymin3/Habit-tracker.git
 
-Navigate to the project directory:
+<ins>Navigate to the project directory:</ins>
 
 cd Habit-tracker
 
-Create a new virtual environment (optional):
+<ins>Create a new virtual environment (optional):</ins>
 
 python -m venv env
 
-Activate the virtual environment (optional):
+alternatively: py -m venv env
 
-source env/bin/activate   On macOS or Linux
-env\Scripts\activate.bat  On Windows
+<ins>Activate the virtual environment (optional):</ins>
 
-Start the application:
+source env/bin/activate     on macOS or Linux
+
+env\Scripts\activate.bat    on Windows
+
+<ins>Start the application:</ins>
 
 python controller.py
+
+alternatively: py controller.py
