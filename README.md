@@ -3,8 +3,10 @@
 ## General Info
 
 This Habit Tracker is part of a project for the module OOFPP (Object Oriented and Functional Programming with Python) at IU Internationale Hochschule.
-It is a simple application designed to help with tracking and managing daily and weekly habits. 
+It is designed to help with tracking and managing daily and weekly habits. 
 Running the application for the first time will trigger the creation of the habit tracker database, which will be populated with examplary habit data for 5 different habits for the last 4 months.
+Note that the directory also includes a unittest file (unittest_habittracker.py) which is used for testing the data analysis parts of the application.
+Unit testing requires the application to be executed at least once before conducting tests, as the script relies on the habit tracker database, which is created during the initial execution.
 
 **Features:**
 - Creating and Deleting habits

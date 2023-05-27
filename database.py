@@ -216,8 +216,10 @@ def sql_get_longest_streak(habit_ID):
             if delta.days <= limit:
                 current_streak += 1
             else:
+                #if current_streak > longest_streak:
+                #    longest_streak = current_streak
                 current_streak = 1
-        if current_streak > longest_streak:
+        if current_streak > longest_streak:  # Necessary if there have not been any breaks, otherwise longest stays 0
             longest_streak = current_streak
 
     # Closing the cursor and the connection

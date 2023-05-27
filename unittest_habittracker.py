@@ -3,9 +3,23 @@ import datetime
 import unittest
 
 
-# Function for visualization of the Habit table and HabitExecution table records, NOT part of unittest.
-# Kept only for troubleshooting.
 def check_database():
+    """
+    Retrieves and displays data from the Habit and HabitExecution tables in the habit_tracker database.
+
+    This function connects to the database, retrieves all the rows from the Habit table, and prints them.
+    It then retrieves all the rows from the HabitExecution table and prints them as well.
+    Finally, it closes the cursor and the database connection.
+    It basically combines the functions get_habit_rows and get_execution_rows but directly prints the rows instead of
+    returning them in a variable.
+
+    Note:
+    - The function assumes that the database file "habit_tracker.db" exists in the current directory. If there is no
+    database, it is required to run the habit tracker application for the first time. This will create the database.
+    - This function was used during the development process and is not part of the unittests. It is only kept for
+    the sake of troubleshooting. It can be used to quickly get an overview of the database without relying on the
+    habit tracker application itself.
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -33,6 +47,21 @@ def check_database():
 
 # Assessing data stored in database
 def get_habit_rows():
+    """
+    Retrieves all rows from the Habit table in the habit_tracker.db database.
+
+    This function connects to the database, executes a query to retrieve all the rows from the Habit table,
+    and returns the result.
+
+    Note:
+    The function assumes that the database file "habit_tracker.db" exists in the current directory. If there is no
+    database, it is required to run the habit tracker application for the first time. This will create the database.
+
+    Returns:
+    list: A list of tuples representing the rows retrieved from the Habit table.
+          Each tuple contains the following columns: (HabitID, Name, Periodicity, DaysSinceLastExecution,
+          CurrentStreak, LongestSteak, BreakCount).
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -47,6 +76,20 @@ def get_habit_rows():
 
 
 def get_execution_rows():
+    """
+    Retrieves all rows from the HabitExecution table in the habit_tracker.db database.
+
+    This function connects to the database, executes a query to retrieve all the rows from the HabitExecution table,
+    and returns the result.
+
+    Note:
+    The function assumes that the database file "habit_tracker.db" exists in the current directory. If there is no
+    database, it is required to run the habit tracker application for the first time. This will create the database.
+
+    Returns:
+    list: A list of tuples representing the rows retrieved from the HabitExecution table.
+         Each tuple contains the following columns: (HabitID, ExecutionDateTime).
+    """
     # Connecting to the database
     conn = sql.connect("habit_tracker.db")
 
@@ -61,6 +104,19 @@ def get_execution_rows():
 
 
 def get_execution_dates_per_ID(ID):
+    """
+    Retrieves the execution dates associated with a specific ID from the HabitExecution table.
+
+    This function calls the "get_execution_rows" function to retrieve all the rows from the HabitExecution table.
+    It filters the rows based on the given ID and extracts the corresponding execution dates.
+    The extracted execution dates are returned as a list.
+
+    Args:
+    - ID (int): The ID for which execution dates are to be retrieved.
+
+    Returns:
+    list: A list of execution dates associated with the given ID.
+    """
     execution_rows = get_execution_rows()
     new_execution_rows = [x for x in execution_rows if x[0] == ID]
     execution_dates = [x[1] for x in new_execution_rows]
@@ -68,11 +124,43 @@ def get_execution_dates_per_ID(ID):
 
 
 def get_habit_record(ID):
+    """
+    Retrieves the habit record associated with a specific ID from the Habit table.
+
+    This function calls the "get_habit_rows" function to retrieve all the rows from the Habit table.
+    It retrieves the habit record based on the given ID by indexing the list of habit rows.
+    The habit record is returned as a tuple containing the columns: (HabitID, Name, Periodicity,
+    DaysSinceLastExecution, CurrentStreak, LongestSteak, BreakCount).
+
+    Args:
+    - ID (int): The ID of the habit for which the record is to be retrieved.
+
+    Returns:
+    tuple: The habit record associated with the given ID. The record contains the following columns:
+           (HabitID, Name, Periodicity, DaysSinceLastExecution, CurrentStreak, LongestSteak, BreakCount).
+    """
     habit_record = get_habit_rows()[ID-1]
     return habit_record
 
 
 def get_numbers_from_single_record(habit_record):
+    """
+    Retrieves specific numbers from a single habit record.
+
+    This function takes a habit record as input, which is a tuple containing the columns: (HabitID, Name,
+    Periodicity, DaysSinceLastExecution, CurrentStreak, LongestSteak, BreakCount). It extracts and returns
+    specific numbers from the habit record, including the days since the last execution, the current streak,
+    the longest streak, and the break count.
+
+    Args:
+    - habit_record (tuple): A habit record containing the following columns:
+        (HabitID, Name, Periodicity, DaysSinceLastExecution, CurrentStreak, LongestSteak, BreakCount). This tuple can be
+        provided through the "get_habit_record" function.
+
+    Returns:
+    tuple: A tuple containing the following numbers extracted from the habit record:
+           (days_since_last_execution, current_streak, longest_streak, break_count).
+    """
     days_since_last_execution = habit_record[3]
     current_streak = habit_record[4]
     longest_streak = habit_record[5]
@@ -81,8 +169,25 @@ def get_numbers_from_single_record(habit_record):
     return days_since_last_execution, current_streak, longest_streak, break_count
 
 
-# Computing data anew from HabitExecution data (similar functions as the ones in the database)
+# Computing data anew from HabitExecution data (similar functions as the ones used in the database module)
 def get_actual_days_since_last_execution(execution_dates):
+    """
+    Calculates the actual number of days that have passed since the last execution.
+
+    This function takes a list of execution dates as input and calculates the number of full days that
+    have passed since the last execution. It uses the latest execution date from the list and the current
+    date and time to calculate the time interval. The calculated number of days since the last completion
+    is returned as an integer.
+    It is similar to the function "sql_get_days_since_completion" from the database module.
+
+    Args:
+    - execution_dates (list): A list of execution dates in the format '%Y-%m-%d %H:%M:%S'
+    The list will be provided by the function "get_execution_dates_per_ID" which in turn takes the ID of a habit as
+    argument.
+
+    Returns:
+    int: The actual number of days that have passed since the last execution.
+    """
     # Calculating how many full days passed since the last execution
     latest_execution_date = execution_dates[-1]
     time_interval = datetime.datetime.now() - datetime.datetime.strptime(latest_execution_date, '%Y-%m-%d %H:%M:%S')
@@ -92,7 +197,49 @@ def get_actual_days_since_last_execution(execution_dates):
 
 
 def get_actual_current_streak(habit_record, execution_dates):
-    execution_dates = execution_dates[::-1]  # function in database sorted by descending, therefore order flipped here
+    """
+    Calculates the actual current streak for a habit.
+
+    This function takes a habit record and a list of execution dates as input and calculates the actual
+    current streak for the habit.
+    The habit record is expected to contain the columns: (HabitID, Name,
+    Periodicity, DaysSinceLastExecution, CurrentStreak, LongestSteak, BreakCount) and is provided by the function
+    "get_habit_record". It is needed for the periodicity value.
+    The execution dates list is provided by the function "get_execution_dates_per_ID" and represents the dates on which
+    the habit was executed, in the format "%Y-%m-%d %H:%M:%S".
+
+    The function first reverses the order of the execution dates since the similar database module
+    function "get_latest_streak" sorts them in descending order. It then initializes the latest streak count to 0.
+    The limit for a streak is determined based on the periodicity of the habit.
+    If the periodicity is "daily", the limit is set to 1,
+    otherwise, if the periodicity is "weekly", the limit is set to 7.
+
+    The function then checks if there are any execution dates available. If there are, it compares the difference
+    between the current date and the first execution date to the limit. If the difference is within the limit,
+    indicating that the habit was executed within the allowed time range, the latest streak count is set to 1.
+
+    The function iterates through the remaining execution dates and checks if the difference between the current
+    date and the previous date is within the limit. If it is, the latest streak count is incremented, and the
+    current date is updated. If the difference exceeds the limit, the loop breaks.
+
+    Finally, the latest streak count, representing the actual current streak for the habit, is returned as an integer.
+
+    The function mimics the database module function "sql_get_latest_streak".
+
+    Args:
+    - habit_record (tuple): A habit record containing the following columns:
+                          (HabitID, Name, Periodicity, DaysSinceLastExecution, CurrentStreak, LongestSteak, BreakCount).
+                          This list is provided by the function "get_habit_record" which takes the ID of a habit as an
+                          argument.
+    - execution_dates (list): A list of execution dates in the format "%Y-%m-%d %H:%M:%S". This list is provided by
+                            the function "get_execution_dates_per_ID" which takes the ID of a habit as an argument.
+
+    Returns:
+    int: The actual current streak for the habit.
+    """
+    # Function in database sorted by descending, therefore order flipped here.
+    # This will also make sure that the latest loop is tracked, not the first.
+    execution_dates = execution_dates[::-1]
     latest_streak = 0
     if habit_record[2] == "daily":
         limit = 1
@@ -114,6 +261,45 @@ def get_actual_current_streak(habit_record, execution_dates):
 
 
 def get_actual_longest_streak(habit_record, execution_dates):
+    """
+    Calculates the actual longest streak for a habit.
+
+    This function takes a habit record and a list of execution dates as input and calculates the actual longest streak
+    for the habit. The habit record is expected to contain the columns: (HabitID, Name, Periodicity,
+    DaysSinceLastExecution, CurrentStreak, LongestSteak, BreakCount) and is provided by the function
+    "get_habit_record". It is needed for the periodicity value.
+    The execution dates list is provided by the function "get_execution_dates_per_ID" and represents the dates
+    on which the habit was executed, in the format "%Y-%m-%d %H:%M:%S".
+
+    The function first initializes the current streak and longest streak counts to 0.
+    The limit for a streak is determined based on the periodicity of the habit.
+    If the periodicity is "daily", the limit is set to 1; otherwise, if the periodicity is "weekly",
+    the limit is set to 7.
+
+    The function then iterates through the execution dates. For the first date, the current streak is set to 1. For
+    subsequent dates, the function calculates the time difference between the current date and the previous date using
+    the "datetime.strptime" function. If the difference in days is within the limit, indicating that the habit was
+    executed within the allowed time range, the current streak is incremented. Otherwise, the current streak is reset
+    to 1.
+
+    The function keeps track of the longest streak encountered so far by comparing the current streak to the longest
+    streak. If the current streak is greater than the longest streak, the longest streak is updated.
+    It mimics the database module function "sql_get_longest_streak"
+
+    Finally, the longest streak count, representing the actual longest streak for the habit, is returned as an integer.
+
+    Args:
+    - habit_record (tuple): A habit record containing the following columns:
+                            (HabitID, Name, Periodicity, DaysSinceLastExecution, CurrentStreak, LongestSteak,
+                            BreakCount).
+                            This record is provided by the function "get_habit_record" which takes the ID of a habit as
+                            an argument.
+    - execution_dates (list): A list of execution dates in the format '%Y-%m-%d %H:%M:%S'. This list is provided by
+                              the function "get_execution_dates_per_ID" which takes the ID of a habit as an argument.
+
+    Returns:
+    longest_streak (int): The actual longest streak for the habit.
+    """
     current_streak = 0
     longest_streak = 0
     if habit_record[2] == "daily":
@@ -125,23 +311,57 @@ def get_actual_longest_streak(habit_record, execution_dates):
         if i == 0:
             current_streak = 1
         else:
-            try:
-                delta = datetime.datetime.strptime(execution_dates[i], '%Y-%m-%d %H:%M:%S') \
-                        - datetime.datetime.strptime(execution_dates[i - 1], '%Y-%m-%d %H:%M:%S')
-                if delta.days <= limit:
-                    current_streak += 1
-                else:
-                    current_streak = 1
-            except ValueError:
-                print((execution_dates[i][1]))
-
-        if current_streak > longest_streak:
+            delta = datetime.datetime.strptime(execution_dates[i], '%Y-%m-%d %H:%M:%S') \
+                    - datetime.datetime.strptime(execution_dates[i - 1], '%Y-%m-%d %H:%M:%S')
+            if delta.days <= limit:
+                current_streak += 1
+            else:
+                if current_streak > longest_streak:
+                    longest_streak = current_streak
+                current_streak = 1
+        if current_streak > longest_streak:  # Necessary if there have not been any breaks, otherwise longest stays 0
             longest_streak = current_streak
 
     return longest_streak
 
 
 def get_actual_break_count(habit_record, execution_dates):
+    """
+    Calculates the actual break count for a habit.
+
+    This function takes a habit record and a list of execution dates as input and calculates the actual break count
+    for the habit. The habit record is expected to contain the columns: (HabitID, Name, Periodicity,
+    DaysSinceLastExecution, CurrentStreak, LongestSteak, BreakCount) and is provided by the function
+    "get_habit_record". It is needed for the periodicity value.
+    The execution dates list is provided by the function
+    "get_execution_dates_per_ID" and represents the dates on which the habit was executed, in the format
+    "%Y-%m-%d %H:%M:%S".
+
+    The function initializes the break count to 0. The limit for a break is determined based on the periodicity of the
+    habit. If the periodicity is "daily", the limit is set to 1; otherwise, if the periodicity is "weekly", the limit
+    is set to 7.
+
+    The function iterates through the execution dates. For the first date, the previous date is set to the current
+    date. For subsequent dates, the function calculates the time difference (delta) between the current date and the
+    previous date. If the difference in days is greater than the limit, indicating a break in habit execution, the
+    break count is incremented. The previous date is updated to the current date.
+
+    Finally, the break count, representing the actual number of breaks in habit execution, is returned as an integer.
+
+    The function mimics the database module function "sql_get_longest_streak".
+
+    Args:
+    - habit_record (tuple): A habit record containing the following columns:
+                            (HabitID, Name, Periodicity, DaysSinceLastExecution, CurrentStreak, LongestStreak,
+                            BreakCount).
+                            This record is provided by the function "get_habit_record" which takes the ID of a habit as
+                            an argument.
+    - execution_dates (list): A list of execution dates in the format '%Y-%m-%d %H:%M:%S'. This list is provided by
+                              the function "get_execution_dates_per_ID" which takes the ID of a habit as an argument.
+
+    Returns:
+    break_count (int): The actual break count for the habit.
+    """
     break_count = 0
     if habit_record[2] == "daily":
         limit = 1
