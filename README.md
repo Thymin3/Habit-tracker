@@ -18,6 +18,7 @@ Unit testing requires the application to be executed at least once before conduc
 ## Getting Started
 
 **Git and Python 3 distribution (e.g. Python 3.11.3) required**  
+**If you don't have a Python distribution installed, please download and install it from the Python website https://www.python.org**
 
 Insert following commands into the command-line:
 
