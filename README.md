@@ -46,3 +46,9 @@ env\Scripts\activate.bat    on Windows
 python controller.py
 
 alternatively: py controller.py
+
+<ins>Test the application:</ins>
+
+python unittest_habittracker.py
+
+alternatively: py unittest_habittracker.py
