@@ -319,6 +319,6 @@ def create_database(percentage):
         pass
 
 
-if __name__ == '__main__':
-    create_database(10)
+if __name__ == "__main__":
+    create_database(10)  # Not executed if database already exists
     run_GUI()
