@@ -42,6 +42,10 @@ source env/bin/activate     on macOS or Linux
 
 env\Scripts\activate.bat    on Windows
 
+<ins>Install project dependencies:</ins>
+
+pip install -r requirements.txt
+
 <ins>Start the application:</ins>
 
 python controller.py
