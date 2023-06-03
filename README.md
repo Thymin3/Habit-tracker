@@ -2,10 +2,13 @@
 
 ## General Info
 
-This Habit Tracker is part of a project for the module OOFPP (Object Oriented and Functional Programming with Python) at IU Internationale Hochschule.
-It is designed to help with tracking and managing daily and weekly habits. 
-Running the application for the first time will trigger the creation of the habit tracker database, which will be populated with examplary habit data for 5 different habits for the last 4 months.
-Note that the directory also includes a unittest file (unittest_habittracker.py) which is used for testing the data analysis parts of the application.
+This Habit Tracker is part of a project for the module OOFPP (Object Oriented and Functional Programming with Python) at IU Internationale Hochschule.\
+It is designed to help with tracking and managing daily and weekly habits.\ 
+Running the application for the first time will trigger the creation of the habit tracker database, which will be populated with examplary habit data for 5 different habits for the last 4 months.\
+\
+**Testing:**
+
+Note that the directory also includes a unittest file (unittest_habittracker.py) which is used for testing the data analysis parts of the application.\
 Unit testing requires the application to be executed at least once before conducting tests, as the script relies on the habit tracker database, which is created during the initial execution.
 
 **Features:**
@@ -22,38 +25,46 @@ Unit testing requires the application to be executed at least once before conduc
 
 Insert following commands into the command-line:
 
-<ins>Clone this repository:</ins>
+#### <ins>Clone this repository:</ins>
 
 git clone https://github.com/Thymin3/Habit-tracker.git
 
-<ins>Navigate to the project directory:</ins>
+#### <ins>Navigate to the project directory:</ins>
 
 cd Habit-tracker
 
-<ins>Create a new virtual environment (optional):</ins>
+#### <ins>Create a new virtual environment (optional):</ins>
 
-python -m venv env
+_On macOS or Linux:_\
+python -m venv env 
 
-alternatively: py -m venv env
+_On Windows:_\
+py -m venv env
 
-<ins>Activate the virtual environment (optional):</ins>
+#### <ins>Activate the virtual environment (optional):</ins>
 
-source env/bin/activate     on macOS or Linux
+_On macOS or Linux:_\
+source env/bin/activate     
 
-env\Scripts\activate.bat    on Windows
+_On Windows:_\
+env\Scripts\activate.bat
 
-<ins>Install project dependencies:</ins>
+#### <ins>Install project dependencies:</ins>
 
 pip install -r requirements.txt
 
-<ins>Start the application:</ins>
+#### <ins>Start the application:</ins>
 
+_On macOS or Linux:_\
 python controller.py
 
-alternatively: py controller.py
+_On Windows:_\
+py controller.py
 
-<ins>Test the application:</ins>
+## Testing the application
 
+_On macOS or Linux:_\
 python unittest_habittracker.py
 
-alternatively: py unittest_habittracker.py
+_On Windows:_\
+py unittest_habittracker.py
